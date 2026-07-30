@@ -1,0 +1,73 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-yaml-types-v1.json"
+  ],
+  "metadata": {
+    "name": "YAML Types Test",
+    "description": "Exercises the YAML type library: the template text authors the pipeline YAML verbatim and placeholders fill scalar values, sequence items and an indented block"
+  },
+  "variables": {
+    "projectName": "example-storefront",
+    "repositoryUrl": "https://git.example.com/acme/example-storefront",
+    "language": "node",
+    "includeDeployStage": true
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# CI configuration for ${projectName}\n# Repository: ${repositoryUrl}\n\nimage: "
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_value",
+      "config": {
+        "description": "a suitable container image for a ${language} project",
+        "valueType": "string"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\nstages:\n  - build\n  - test\n\nbuild:\n  stage: build\n  script:\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_list_items",
+      "config": {
+        "description": "commands that install dependencies and build ${projectName}",
+        "indentSpaces": 4
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\ntest:\n  stage: test\n  script:\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_list_items",
+      "config": {
+        "description": "commands that run the ${projectName} test suite",
+        "indentSpaces": 4
+      }
+    },
+    {
+      "type": "conditional",
+      "condition": "includeDeployStage == true",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n\ndeploy:\n  stage: deploy\n  only:\n    - main\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "yaml_block",
+          "config": {
+            "description": "the remaining fields of a deploy job for ${projectName} that depends on the test job",
+            "indentSpaces": 2
+          }
+        }
+      ]
+    }
+  ]
+}

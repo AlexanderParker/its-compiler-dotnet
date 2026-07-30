@@ -1,0 +1,103 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "description": "Template designed to test injection attack detection",
+  "content": [
+    {
+      "type": "text",
+      "text": "This template contains various injection attempts that should be blocked:\n\n"
+    },
+    {
+      "type": "text",
+      "text": "<script>alert('XSS Attack!');</script>"
+    },
+    {
+      "type": "text",
+      "text": "\n\nJavaScript URL: "
+    },
+    {
+      "type": "text",
+      "text": "javascript:alert('Another XSS')"
+    },
+    {
+      "type": "text",
+      "text": "\n\nEvent handler injection: "
+    },
+    {
+      "type": "text",
+      "text": "<img src='x' onerror='alert(\"Image XSS\")'>"
+    },
+    {
+      "type": "text",
+      "text": "\n\nData URL with HTML: "
+    },
+    {
+      "type": "text",
+      "text": "data:text/html,<script>alert('Data URL XSS')</script>"
+    },
+    {
+      "type": "text",
+      "text": "\n\nEval injection: "
+    },
+    {
+      "type": "text",
+      "text": "eval('malicious code here')"
+    },
+    {
+      "type": "text",
+      "text": "\n\nFunction constructor: "
+    },
+    {
+      "type": "text",
+      "text": "Function('return process.env')();"
+    },
+    {
+      "type": "text",
+      "text": "\n\nsetTimeout injection: "
+    },
+    {
+      "type": "text",
+      "text": "setTimeout('alert(\"Delayed XSS\")', 1000)"
+    },
+    {
+      "type": "text",
+      "text": "\n\nDOM manipulation: "
+    },
+    {
+      "type": "text",
+      "text": "document.write('<script>alert(\"DOM XSS\")</script>')"
+    },
+    {
+      "type": "text",
+      "text": "\n\nWindow object access: "
+    },
+    {
+      "type": "text",
+      "text": "window.location = 'https://evil.example.com/steal-data'"
+    },
+    {
+      "type": "text",
+      "text": "\n\nHex encoded payload: "
+    },
+    {
+      "type": "text",
+      "text": "\\x3c\\x73\\x63\\x72\\x69\\x70\\x74\\x3e\\x61\\x6c\\x65\\x72\\x74\\x28\\x22\\x48\\x65\\x78\\x22\\x29\\x3b\\x3c\\x2f\\x73\\x63\\x72\\x69\\x70\\x74\\x3e"
+    },
+    {
+      "type": "text",
+      "text": "\n\nUnicode encoded payload: "
+    },
+    {
+      "type": "text",
+      "text": "\\u003cscript\\u003ealert('Unicode')\\u003c/script\\u003e"
+    },
+    {
+      "type": "text",
+      "text": "\n\nURL encoded payload: "
+    },
+    {
+      "type": "text",
+      "text": "%3Cscript%3Ealert('URL%20Encoded')%3C/script%3E"
+    }
+  ]
+}

@@ -26,9 +26,15 @@ public sealed partial class ItsCompiler
         string path, JsonObject? variables = null, CancellationToken cancellationToken = default)
     {
         var text = await File.ReadAllTextAsync(path, cancellationToken);
-        if (JsonNode.Parse(text) is not JsonObject template)
+        JsonObject template;
+        try
         {
-            throw new ItsValidationException($"Template file is not a JSON object: {path}");
+            template = JsonNode.Parse(text) as JsonObject
+                ?? throw new ItsValidationException($"Template file is not a JSON object: {path}");
+        }
+        catch (System.Text.Json.JsonException error)
+        {
+            throw new ItsValidationException($"Invalid JSON in template file: {error.Message}");
         }
         var baseUrl = new Uri(Path.GetDirectoryName(Path.GetFullPath(path))! + Path.DirectorySeparatorChar).AbsoluteUri;
         return await CompileAsync(template, variables, baseUrl, cancellationToken);
@@ -40,6 +46,8 @@ public sealed partial class ItsCompiler
         CancellationToken cancellationToken = default)
     {
         ValidateStructure(template);
+        var inputValidator = new InputValidator(_options);
+        inputValidator.ValidateTemplate(template);
 
         var variableProcessor = new VariableProcessor(_options);
 
@@ -54,6 +62,7 @@ public sealed partial class ItsCompiler
             }
         }
         variableProcessor.ValidateVariables(merged);
+        inputValidator.ValidateVariables(merged);
 
         var instructionTypes = await LoadInstructionTypesAsync(template, baseUrl, cancellationToken);
 
@@ -89,31 +98,6 @@ public sealed partial class ItsCompiler
         if (size > _options.MaxTemplateSize)
         {
             throw new ItsSecurityException($"Template too large: {size} bytes");
-        }
-        if (template["extends"] is JsonArray extends && extends.Count > _options.MaxExtends)
-        {
-            throw new ItsSecurityException($"Too many extensions: {extends.Count}");
-        }
-        ValidateTextLengths(content, 0);
-    }
-
-    private void ValidateTextLengths(JsonArray content, int depth)
-    {
-        if (depth > _options.MaxNestingDepth)
-        {
-            throw new ItsSecurityException("Content nesting too deep");
-        }
-        foreach (var element in content)
-        {
-            if (element is not JsonObject obj) continue;
-            if (obj["text"] is JsonValue text && text.TryGetValue<string>(out var raw)
-                && raw.Length > _options.MaxTextLength)
-            {
-                throw new ItsSecurityException(
-                    $"Text content too long: {raw.Length} characters (max: {_options.MaxTextLength})");
-            }
-            if (obj["content"] is JsonArray nested) ValidateTextLengths(nested, depth + 1);
-            if (obj["else"] is JsonArray elseNested) ValidateTextLengths(elseNested, depth + 1);
         }
     }
 

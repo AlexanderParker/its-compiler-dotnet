@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0",
+  "extends": ["https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"],
+  "customInstructionTypes": {
+    "list": {
+      "template": "CUSTOM LIST FORMAT: ([{<{description}>}]) - Style: {format}",
+      "description": "Custom list that overrides the standard list type"
+    }
+  },
+  "content": [
+    {
+      "type": "placeholder",
+      "instructionType": "list",
+      "config": {
+        "description": "Create a custom formatted list",
+        "format": "bullet_points"
+      }
+    }
+  ]
+}

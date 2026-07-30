@@ -1,0 +1,86 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-html-types-v1.json"
+  ],
+  "metadata": {
+    "name": "HTML Types Test",
+    "description": "Exercises the HTML type library: the template text authors the markup verbatim and placeholders fill text, list items, table rows and form fields within it"
+  },
+  "variables": {
+    "productName": "Solar Garden Lantern",
+    "productUrl": "https://www.example.com/products/solar-garden-lantern",
+    "includeSpecifications": true
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "<section class=\"product-card\">\n  <h2><a href=\"${productUrl}\">${productName}</a></h2>\n  <p class=\"product-card__summary\">"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "html_text",
+      "config": {
+        "description": "a short marketing summary of the ${productName}",
+        "allowInlineMarkup": true
+      }
+    },
+    {
+      "type": "text",
+      "text": "</p>\n\n  <h3>Key features</h3>\n  <ul class=\"product-card__features\">\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "html_list_items",
+      "config": {
+        "description": "four key features of the ${productName} focused on benefits for the buyer",
+        "itemCount": 4
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n  </ul>\n"
+    },
+    {
+      "type": "conditional",
+      "condition": "includeSpecifications == true",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n  <h3>Specifications</h3>\n  <table class=\"product-card__specs\">\n    <thead>\n      <tr><th>Specification</th><th>Value</th></tr>\n    </thead>\n    <tbody>\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "html_table_rows",
+          "config": {
+            "description": "rows for the dimensions, weight, battery life and materials of the ${productName}",
+            "rows": 4,
+            "columns": 2
+          }
+        },
+        {
+          "type": "text",
+          "text": "\n    </tbody>\n  </table>\n"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "text": "\n  <h3>Ask about this product</h3>\n  <div class=\"product-card__enquiry\">\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "html_form_fields",
+      "config": {
+        "description": "name, email and message fields for an enquiry about the ${productName}",
+        "fieldCount": 3,
+        "includeLabels": true
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n  </div>\n</section>"
+    }
+  ]
+}

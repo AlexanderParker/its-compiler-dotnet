@@ -1,0 +1,68 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "customInstructionTypes": {
+    "recipe_step": {
+      "template": "<<Create a cooking step using this prompt: ([{<{description}>}]). Format: Step {stepNumber}: [instruction]. Duration: {duration} minutes.>>",
+      "description": "Generates numbered cooking steps with duration",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "stepNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "duration": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 5
+          }
+        }
+      }
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# Chocolate Chip Cookies Recipe\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "recipe_step",
+      "config": {
+        "description": "Preheat oven and prepare baking sheets",
+        "stepNumber": 1,
+        "duration": 5
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "recipe_step",
+      "config": {
+        "description": "Mix dry ingredients in a large bowl",
+        "stepNumber": 2,
+        "duration": 3
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "list",
+      "config": {
+        "description": "List required kitchen tools",
+        "format": "bullet_points",
+        "itemCount": 5
+      }
+    }
+  ]
+}

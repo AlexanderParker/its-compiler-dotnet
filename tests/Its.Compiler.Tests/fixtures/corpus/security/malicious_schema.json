@@ -1,0 +1,38 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "_test_info": {
+    "purpose": "Test template that attempts to load malicious or blocked schemas",
+    "expected_result": "Should be blocked by URL validator and schema allowlist",
+    "attack_vectors": ["SSRF attempts via schema URLs", "Private network access", "File system access", "Dangerous protocols", "Path traversal in URLs"]
+  },
+  "extends": [
+    "file:///etc/passwd",
+    "http://192.168.1.1/internal-schema.json",
+    "https://127.0.0.1:8080/localhost-schema.json",
+    "ftp://evil.example.com/malicious.json",
+    "gopher://attack.example.com/payload",
+    "ldap://directory.internal.com/schema",
+    "data:application/json,{\"malicious\":\"payload\"}",
+    "https://evil.example.com/../../../etc/passwd",
+    "https://blocked.example.com/schema.json?token=secret",
+    "javascript:alert('xss')",
+    "https://10.0.0.1/private-network.json",
+    "https://172.16.0.1/internal.json",
+    "https://169.254.1.1/linklocal.json",
+    "https://224.0.0.1/multicast.json"
+  ],
+  "content": [
+    {
+      "type": "text",
+      "text": "This template should be blocked before content is processed"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "malicious_type",
+      "config": {
+        "description": "This should never be reached due to schema blocking"
+      }
+    }
+  ]
+}

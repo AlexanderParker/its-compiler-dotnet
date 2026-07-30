@@ -1,0 +1,81 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "variables": {
+    "includeSpecs": true,
+    "includePricing": false,
+    "productName": "SmartWatch X1"
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# ${productName} Overview\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write a brief overview of the ${productName}",
+        "tone": "professional",
+        "length": "short"
+      }
+    },
+    {
+      "type": "conditional",
+      "condition": "includeSpecs == true",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n\n## Technical Specifications\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "table",
+          "config": {
+            "description": "Create a specifications table for the ${productName}",
+            "format": "markdown",
+            "columns": 2,
+            "rows": 4
+          }
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": "includePricing == true",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n\n## Pricing\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "paragraph",
+          "config": {
+            "description": "Explain the pricing structure for the ${productName}",
+            "tone": "professional",
+            "length": "short"
+          }
+        }
+      ],
+      "else": [
+        {
+          "type": "text",
+          "text": "\n\n## Availability\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "paragraph",
+          "config": {
+            "description": "Explain where to buy the ${productName}",
+            "tone": "helpful",
+            "length": "short"
+          }
+        }
+      ]
+    }
+  ]
+}

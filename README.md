@@ -72,6 +72,16 @@ func azure functionapp publish <your-function-app>
 
 Processing limits are configurable per environment through the `ITS_*` application settings above. The function holds no state and no model keys: it compiles templates deterministically, so downstream steps (a Logic App, Workato recipe or any orchestrator) pass the compiled prompt to whichever governed LLM connector the organisation already uses.
 
+## Security model
+
+Parity with the Python reference compiler, verified by running the full shared test corpus (every valid template compiles; every invalid and security template is blocked):
+
+- Structural validation: element types and required fields (including the required placeholder `description`), custom instruction type checks, extends entry validation (relative references allowed, non-http schemes and protocol-relative URLs rejected)
+- Content scanning: dangerous patterns (script and iframe tags, JavaScript and data URLs, eval/exec/Function calls, event handlers, dunder names) and null bytes in text elements, config values and string variables; toggleable via `EnableContentScanning`
+- Variable hardening: identifier-pattern names with dangerous names blocked (`__proto__`, `constructor`, `eval` and friends)
+- Schema URL security: https-only by default, trusted specification prefixes, a domain allowlist enforced by default (`DomainAllowlist` / `EnforceDomainAllowlist`), localhost and private-network blocking, path traversal rejection, response size caps and schema structure validation
+- Conditions are evaluated by a hand-rolled parser with no dynamic evaluation, so code injection through expressions is impossible by construction
+
 ## Development
 
 ```bash

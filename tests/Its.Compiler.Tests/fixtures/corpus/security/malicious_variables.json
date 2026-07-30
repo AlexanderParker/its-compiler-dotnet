@@ -1,0 +1,104 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "_test_info": {
+    "purpose": "Test template with malicious variable references and dangerous variable structures",
+    "expected_result": "Should be blocked by variable processor security validation",
+    "attack_vectors": [
+      "Prototype pollution attempts",
+      "Constructor manipulation",
+      "Dangerous variable names",
+      "Deep object traversal",
+      "Script injection via variables"
+    ]
+  },
+  "variables": {
+    "__proto__": {
+      "isAdmin": true,
+      "polluted": "global_pollution"
+    },
+    "constructor": {
+      "prototype": {
+        "evil": "payload"
+      }
+    },
+    "__builtins__": {
+      "exec": "function() { return 'dangerous'; }"
+    },
+    "eval": "alert('xss')",
+    "user": {
+      "name": "<script>alert('xss')</script>",
+      "profile": {
+        "__class__": "AdminUser",
+        "permissions": ["admin", "root"],
+        "data": {
+          "nested": {
+            "deep": {
+              "very": {
+                "extremely": {
+                  "dangerous": "prototype_pollution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "globals": {
+      "window": "window.location='evil.com'",
+      "document": "document.write('xss')"
+    },
+    "system": {
+      "command": "rm -rf /",
+      "shell": "/bin/bash -c 'malicious'"
+    },
+    "injection": {
+      "javascript": "javascript:alert('xss')",
+      "data_url": "data:text/html,<script>alert('xss')</script>",
+      "encoded": "\\x3cscript\\x3ealert('xss')\\x3c/script\\x3e"
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "Welcome ${user.name}! Your role is: ${user.profile.__class__}"
+    },
+    {
+      "type": "text",
+      "text": "Executing: ${system.command}"
+    },
+    {
+      "type": "text",
+      "text": "Accessing: ${globals.window}"
+    },
+    {
+      "type": "text",
+      "text": "Polluted value: ${__proto__.polluted}"
+    },
+    {
+      "type": "text",
+      "text": "Constructor manipulation: ${constructor.prototype.evil}"
+    },
+    {
+      "type": "text",
+      "text": "Deep traversal: ${user.profile.data.nested.deep.very.extremely.dangerous}"
+    },
+    {
+      "type": "conditional",
+      "condition": "__builtins__.exec != null",
+      "content": [
+        {
+          "type": "text",
+          "text": "Dangerous builtin access: ${__builtins__.exec}"
+        }
+      ]
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write about ${injection.javascript} and ${injection.data_url}"
+      }
+    }
+  ]
+}

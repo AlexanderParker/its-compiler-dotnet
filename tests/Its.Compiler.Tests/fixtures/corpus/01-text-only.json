@@ -1,0 +1,10 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "content": [
+    {
+      "type": "text",
+      "text": "This is a simple template with no placeholders.\n\nIt should compile to a prompt with just this text."
+    }
+  ]
+}

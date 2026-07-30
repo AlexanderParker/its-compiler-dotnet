@@ -1,0 +1,39 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "variables": {
+    "topic": "sustainable technology",
+    "itemCount": 4
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# ${topic}\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write an introduction about ${topic}",
+        "tone": "professional",
+        "length": "medium"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Examples\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "list",
+      "config": {
+        "description": "List ${itemCount} examples of ${topic}",
+        "format": "bullet_points",
+        "itemCount": "${itemCount}"
+      }
+    }
+  ]
+}

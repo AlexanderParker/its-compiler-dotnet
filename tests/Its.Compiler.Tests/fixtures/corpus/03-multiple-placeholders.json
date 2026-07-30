@@ -1,0 +1,48 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "content": [
+    {
+      "type": "text",
+      "text": "# "
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "title",
+      "config": {
+        "description": "Create a catchy title about healthy eating",
+        "style": "catchy",
+        "length": "short"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Introduction\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write an engaging introduction about the benefits of healthy eating",
+        "tone": "enthusiastic",
+        "length": "medium"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Top Foods\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "list",
+      "config": {
+        "description": "List 5 superfoods and their benefits",
+        "format": "numbered",
+        "itemCount": 5
+      }
+    }
+  ]
+}
