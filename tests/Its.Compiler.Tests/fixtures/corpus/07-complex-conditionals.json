@@ -1,0 +1,78 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "variables": {
+    "audience": "technical",
+    "productPrice": 1200,
+    "settings": {
+      "showAdvanced": true,
+      "showBeginner": false
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# Product Guide\n\n"
+    },
+    {
+      "type": "conditional",
+      "condition": "audience == \"technical\" and settings.showAdvanced == True",
+      "content": [
+        {
+          "type": "text",
+          "text": "## Advanced Technical Details\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "paragraph",
+          "config": {
+            "description": "Write detailed technical specifications for advanced users",
+            "tone": "technical",
+            "length": "long"
+          }
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": "productPrice > 1000",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n\n## Premium Features\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "list",
+          "config": {
+            "description": "List premium features that justify the high price",
+            "format": "bullet_points",
+            "itemCount": 5
+          }
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": "audience != \"technical\" or settings.showBeginner == True",
+      "content": [
+        {
+          "type": "text",
+          "text": "\n\n## Getting Started\n\n"
+        },
+        {
+          "type": "placeholder",
+          "instructionType": "list",
+          "config": {
+            "description": "Create a beginner-friendly setup guide",
+            "format": "numbered",
+            "itemCount": 4
+          }
+        }
+      ]
+    }
+  ]
+}

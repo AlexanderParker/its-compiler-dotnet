@@ -26,7 +26,28 @@ public sealed class CompilerOptions
     /// <summary>When false, any https schema URL is allowed; when true, only trusted or allowed prefixes.</summary>
     public bool RestrictSchemasToAllowlist { get; set; }
 
+    /// <summary>Domains schema URLs may resolve from when <see cref="EnforceDomainAllowlist"/> is on. Subdomains match.</summary>
+    public IList<string> DomainAllowlist { get; } = new List<string> { "alexanderparker.github.io" };
+
+    /// <summary>Enforce <see cref="DomainAllowlist"/> for schema URLs outside the trusted prefixes. On by default, matching the Python compiler.</summary>
+    public bool EnforceDomainAllowlist { get; set; } = true;
+
+    /// <summary>Block schema URLs that name or resolve to localhost. On by default.</summary>
+    public bool BlockLocalhost { get; set; } = true;
+
+    /// <summary>Block schema URLs that name or resolve to private, loopback or link-local addresses. On by default.</summary>
+    public bool BlockPrivateNetworks { get; set; } = true;
+
     public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+    /// <summary>Maximum schema response size in bytes.</summary>
+    public int MaxSchemaResponseSize { get; set; } = 10 * 1024 * 1024;
+
+    /// <summary>Maximum number of custom instruction types per template.</summary>
+    public int MaxCustomTypes { get; set; } = 50;
+
+    /// <summary>Scan text elements, string variables and config values for dangerous content patterns. On by default.</summary>
+    public bool EnableContentScanning { get; set; } = true;
 
     // Processing limits (defaults match the reference compilers)
     public int MaxTemplateSize { get; set; } = 1024 * 1024;

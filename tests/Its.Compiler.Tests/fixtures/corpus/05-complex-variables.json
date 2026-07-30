@@ -1,0 +1,44 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "variables": {
+    "product": {
+      "name": "EcoPhone Pro",
+      "category": "smartphone",
+      "price": 899
+    },
+    "features": ["solar charging", "recycled materials", "modular design"],
+    "reviewCount": 3
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# ${product.name} Review\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write a review introduction for the ${product.name}, a ${product.category} that costs $${product.price}",
+        "tone": "professional",
+        "length": "medium"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Key Feature: ${features[0]}\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Explain how ${features[0]} works in the ${product.name}",
+        "tone": "technical",
+        "length": "short"
+      }
+    }
+  ]
+}

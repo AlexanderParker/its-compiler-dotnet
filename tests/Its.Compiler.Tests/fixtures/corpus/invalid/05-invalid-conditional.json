@@ -1,0 +1,19 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "variables": {
+    "showSection": true
+  },
+  "content": [
+    {
+      "type": "conditional",
+      "condition": "invalid syntax here && missing quotes",
+      "content": [
+        {
+          "type": "text",
+          "text": "This conditional has invalid syntax"
+        }
+      ]
+    }
+  ]
+}

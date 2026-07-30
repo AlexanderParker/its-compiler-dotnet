@@ -1,0 +1,111 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "description": "Template with malicious conditional expressions that should be blocked",
+  "variables": {
+    "test": true,
+    "user": { "name": "admin" },
+    "items": [1, 2, 3]
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "Testing expression injection prevention:\n\n"
+    },
+    {
+      "type": "conditional",
+      "condition": "__import__('os').system('rm -rf /')",
+      "content": [{ "type": "text", "text": "OS command injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "exec('malicious_code = \"payload\"')",
+      "content": [{ "type": "text", "text": "Exec injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "eval('__import__(\"subprocess\").call([\"rm\", \"-rf\", \"/\"])')",
+      "content": [{ "type": "text", "text": "Eval injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "open('/etc/passwd', 'r').read()",
+      "content": [{ "type": "text", "text": "File access injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "globals()['__builtins__']['eval']('malicious')",
+      "content": [{ "type": "text", "text": "Globals access injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "locals()['dangerous_var'] = 'payload'",
+      "content": [{ "type": "text", "text": "Locals manipulation" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "getattr(__builtins__, 'eval')('evil')",
+      "content": [{ "type": "text", "text": "Getattr injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "setattr(user, '__class__', str)",
+      "content": [{ "type": "text", "text": "Setattr injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "hasattr(user, '__globals__')",
+      "content": [{ "type": "text", "text": "Hasattr probing" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "delattr(user, 'name')",
+      "content": [{ "type": "text", "text": "Delattr injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "user.__class__.__bases__[0].__subclasses__()[104].__init__.__globals__['sys']",
+      "content": [{ "type": "text", "text": "Python object traversal injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "().__class__.__bases__[0].__subclasses__()[59].__init__.__globals__['__builtins__']['eval']('malicious')",
+      "content": [{ "type": "text", "text": "Complex object traversal" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "[x for x in range(1000000)]",
+      "content": [{ "type": "text", "text": "Resource exhaustion via list comprehension" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "{x: x for x in range(1000000)}",
+      "content": [{ "type": "text", "text": "Resource exhaustion via dict comprehension" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "lambda: __import__('os').system('evil')",
+      "content": [{ "type": "text", "text": "Lambda injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "(x for x in range(1000000))",
+      "content": [{ "type": "text", "text": "Generator expression DoS" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "compile('exec(\"evil\")', '<string>', 'exec')",
+      "content": [{ "type": "text", "text": "Compile injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "input('Enter malicious input: ')",
+      "content": [{ "type": "text", "text": "Input injection" }]
+    },
+    {
+      "type": "conditional",
+      "condition": "test and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and (True and True))))))))))))))",
+      "content": [{ "type": "text", "text": "Deep nesting DoS attack" }]
+    }
+  ]
+}

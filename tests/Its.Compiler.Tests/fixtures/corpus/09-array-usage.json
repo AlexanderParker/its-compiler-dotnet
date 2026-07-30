@@ -1,0 +1,80 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": [
+    "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-standard-types-v1.json"
+  ],
+  "variables": {
+    "product": {
+      "name": "SmartHome Hub",
+      "category": "IoT device",
+      "price": 199
+    },
+    "features": [
+      "voice control",
+      "home automation",
+      "energy monitoring",
+      "security integration"
+    ],
+    "tags": ["smart", "connected", "efficient"],
+    "specifications": {
+      "connectivity": ["WiFi", "Bluetooth", "Zigbee"],
+      "power": "12V DC",
+      "dimensions": "10cm x 10cm x 3cm"
+    }
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "# ${product.name} Product Description\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write a compelling product introduction for the ${product.name}, emphasizing that it includes these key features: ${features}",
+        "tone": "marketing",
+        "length": "medium"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Key Features\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "list",
+      "config": {
+        "description": "Create a detailed feature list based on these capabilities: ${features}. Expand each feature with benefits and technical details",
+        "format": "bullet_points",
+        "itemCount": "${features.length}"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Technical Connectivity\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Explain the connectivity options: ${specifications.connectivity}, highlighting how each protocol benefits different use cases",
+        "tone": "technical",
+        "length": "short"
+      }
+    },
+    {
+      "type": "text",
+      "text": "\n\n## Product Tags: ${tags}\n\n"
+    },
+    {
+      "type": "placeholder",
+      "instructionType": "paragraph",
+      "config": {
+        "description": "Write a conclusion that ties together these product characteristics: ${tags}, explaining why they make this ${product.category} special",
+        "tone": "persuasive",
+        "length": "short"
+      }
+    }
+  ]
+}
