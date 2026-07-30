@@ -1,0 +1,47 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": ["./its-html-types-v1.json"],
+  "variables": {
+    "productName": "Solar Garden Lantern"
+  },
+  "content": [
+    { "type": "text", "text": "<section class=\"product-card\">\n  <p class=\"summary\">" },
+    {
+      "type": "placeholder",
+      "instructionType": "html_text",
+      "config": {
+        "description": "a summary of the ${productName}",
+        "allowInlineMarkup": true
+      }
+    },
+    { "type": "text", "text": "</p>\n  <ul>\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "html_list_items",
+      "config": {
+        "description": "four features of the ${productName}",
+        "itemCount": 4
+      }
+    },
+    { "type": "text", "text": "\n  </ul>\n  <table>\n    <thead><tr><th>Specification</th><th>Value</th></tr></thead>\n    <tbody>\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "html_table_rows",
+      "config": {
+        "description": "specification rows for the ${productName}",
+        "rows": 3,
+        "columns": 2
+      }
+    },
+    { "type": "text", "text": "\n    </tbody>\n  </table>\n  <div class=\"extras\">" },
+    {
+      "type": "placeholder",
+      "instructionType": "html_fragment",
+      "config": {
+        "description": "a small call-to-action block for the ${productName}"
+      }
+    },
+    { "type": "text", "text": "</div>\n</section>" }
+  ]
+}

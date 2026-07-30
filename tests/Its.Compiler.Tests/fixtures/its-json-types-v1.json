@@ -1,0 +1,102 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-type-extension-schema-v1.json",
+  "$id": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-json-types-v1.json",
+  "title": "Instruction Template Specification - JSON Types v1.0",
+  "description": "Type library for filling value positions inside JSON structure authored in the template; the template text carries the document's braces, field names and fixed values verbatim",
+  "version": "1.0.0",
+  "instructionTypes": {
+    "json_string": {
+      "template": "<<Replace this placeholder with a JSON string using this user prompt: ([{<{description}>}]). Format requirements: Produce a single JSON string literal including its surrounding double quotes, exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a single JSON string literal, quotes included, for a value position authored in the template",
+      "examples": [
+        {
+          "config": {
+            "description": "a plausible order id such as ord_8f3k2q"
+          },
+          "output": "<<Replace this placeholder with a JSON string using this user prompt: ([{<a plausible order id such as ord_8f3k2q>}]). Format requirements: Produce a single JSON string literal including its surrounding double quotes, exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>"
+        }
+      ]
+    },
+    "json_number": {
+      "template": "<<Replace this placeholder with a JSON number using this user prompt: ([{<{description}>}]). Format requirements: Produce a single JSON number literal of kind {numberType} (integer=a whole number, decimal=may have a fractional part, any=whichever kind fits the prompt), without quotes, exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a single JSON number literal for a value position authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "numberType": {
+            "type": "string",
+            "enum": [
+              "integer",
+              "decimal",
+              "any"
+            ],
+            "default": "any"
+          }
+        }
+      }
+    },
+    "json_value": {
+      "template": "<<Replace this placeholder with a JSON value using this user prompt: ([{<{description}>}]). Format requirements: Produce a single JSON value of type {valueType} (any means use whichever JSON type best fits the prompt), exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a single JSON value of a configurable type for a value position authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "valueType": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "array",
+              "object",
+              "any"
+            ],
+            "default": "any"
+          }
+        }
+      }
+    },
+    "json_array_items": {
+      "template": "<<Replace this placeholder with JSON array items using this user prompt: ([{<{description}>}]). Format requirements: Produce JSON array items separated by commas, without the enclosing square brackets, each item of type {itemType} (any means use whichever JSON type best fits the prompt), valid inside the surrounding array in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates comma-separated items for an array whose brackets are authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "itemType": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "object",
+              "array",
+              "any"
+            ],
+            "default": "any"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "If specified, the exact number of items to generate"
+          }
+        }
+      }
+    },
+    "json_object_fields": {
+      "template": "<<Replace this placeholder with JSON object fields using this user prompt: ([{<{description}>}]). Format requirements: Produce JSON object members separated by commas, each a double-quoted field name followed by a colon and a value, without the enclosing curly braces, valid inside the surrounding object in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates comma-separated members for an object whose braces are authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "fieldCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "description": "If specified, the exact number of fields to generate"
+          }
+        }
+      }
+    }
+  }
+}

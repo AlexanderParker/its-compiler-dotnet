@@ -1,0 +1,36 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": ["./its-yaml-types-v1.json"],
+  "variables": {
+    "projectName": "example-storefront"
+  },
+  "content": [
+    { "type": "text", "text": "# CI configuration\nimage: " },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_value",
+      "config": {
+        "description": "a container image for ${projectName}",
+        "valueType": "string"
+      }
+    },
+    { "type": "text", "text": "\n\nbuild:\n  script:\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_list_items",
+      "config": {
+        "description": "commands that build ${projectName}",
+        "indentSpaces": 4
+      }
+    },
+    { "type": "text", "text": "\n\ndeploy:\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "yaml_block",
+      "config": {
+        "description": "the fields of a deploy job for ${projectName}"
+      }
+    }
+  ]
+}

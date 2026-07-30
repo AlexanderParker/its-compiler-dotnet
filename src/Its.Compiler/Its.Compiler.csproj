@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Its.Compiler</RootNamespace>
+    <PackageId>Its.Compiler</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Alexander Parker</Authors>
+    <Description>.NET implementation of the Instruction Template Specification (ITS) compiler: compiles JSON templates with placeholders, variables, conditionals and reference data into structured AI prompts.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/AlexanderParker/its-compiler-dotnet</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AlexanderParker/its-compiler-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>its;instruction-template-specification;template;compiler;ai;prompt</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,74 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-type-extension-schema-v1.json",
+  "$id": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-yaml-types-v1.json",
+  "title": "Instruction Template Specification - YAML Types v1.0",
+  "description": "Type library for filling value positions inside YAML structure authored in the template; the template text carries the document's keys, nesting and fixed values verbatim",
+  "version": "1.0.0",
+  "instructionTypes": {
+    "yaml_value": {
+      "template": "<<Replace this placeholder with a YAML value using this user prompt: ([{<{description}>}]). Format requirements: Produce a single YAML scalar value of type {valueType} (any means use whichever type best fits the prompt) on one line, exactly as it must appear at this position after the enclosing mapping key. Output raw, valid YAML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a single YAML scalar value for a mapping key authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "valueType": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "any"
+            ],
+            "default": "any"
+          }
+        }
+      }
+    },
+    "yaml_list_items": {
+      "template": "<<Replace this placeholder with YAML list items using this user prompt: ([{<{description}>}]). Format requirements: Produce YAML sequence items, one per line, each line beginning with {indentSpaces} spaces followed by a hyphen and a space, valid at this position in the enclosing YAML document. Output raw, valid YAML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates sequence items at a stated indent for a list whose key is authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "indentSpaces": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "default": 2
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "If specified, the exact number of items to generate"
+          }
+        }
+      },
+      "examples": [
+        {
+          "config": {
+            "description": "commands that install dependencies and run the tests",
+            "indentSpaces": 4,
+            "itemCount": 2
+          },
+          "output": "<<Replace this placeholder with YAML list items using this user prompt: ([{<commands that install dependencies and run the tests>}]). Format requirements: Produce YAML sequence items, one per line, each line beginning with 4 spaces followed by a hyphen and a space, valid at this position in the enclosing YAML document. Output raw, valid YAML only - no markdown code fences, no surrounding commentary, and no explanation.>>"
+        }
+      ]
+    },
+    "yaml_block": {
+      "template": "<<Replace this placeholder with a YAML block using this user prompt: ([{<{description}>}]). Format requirements: Produce a YAML mapping or sequence fragment with every line indented by {indentSpaces} spaces, valid at this position in the enclosing YAML document. Output raw, valid YAML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates an indented mapping or sequence fragment under a parent key authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "indentSpaces": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 20,
+            "default": 2
+          }
+        }
+      }
+    }
+  }
+}

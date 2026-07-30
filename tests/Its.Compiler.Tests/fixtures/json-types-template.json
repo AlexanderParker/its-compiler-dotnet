@@ -1,0 +1,54 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": ["./its-json-types-v1.json"],
+  "variables": {
+    "resourceName": "orders",
+    "includeErrorExample": true
+  },
+  "content": [
+    { "type": "text", "text": "{\n  \"data\": [\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "json_array_items",
+      "config": {
+        "description": "three ${resourceName} objects with id and status fields",
+        "itemType": "object",
+        "itemCount": 3
+      }
+    },
+    { "type": "text", "text": "\n  ],\n  \"page\": 1,\n  \"total\": " },
+    {
+      "type": "placeholder",
+      "instructionType": "json_number",
+      "config": {
+        "description": "a plausible total count of ${resourceName}",
+        "numberType": "integer"
+      }
+    },
+    { "type": "text", "text": ",\n  \"summary\": " },
+    {
+      "type": "placeholder",
+      "instructionType": "json_value",
+      "config": {
+        "description": "a one-line summary of the ${resourceName} collection"
+      }
+    },
+    { "type": "text", "text": "\n}" },
+    {
+      "type": "conditional",
+      "condition": "includeErrorExample == true",
+      "content": [
+        { "type": "text", "text": "\n\n{\n  \"error\": {\n    \"code\": \"not_found\",\n    \"message\": " },
+        {
+          "type": "placeholder",
+          "instructionType": "json_string",
+          "config": {
+            "description": "a message about a missing ${resourceName} resource"
+          }
+        },
+        { "type": "text", "text": "\n  }\n}" }
+      ]
+    }
+  ]
+}

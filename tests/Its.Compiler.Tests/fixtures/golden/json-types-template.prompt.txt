@@ -1,0 +1,31 @@
+INTRODUCTION
+
+You are an AI assistant that fills in content templates. Follow the instructions exactly and replace each placeholder with appropriate content based on the user prompts provided. Respond only with the transformed content.
+
+INSTRUCTIONS
+
+1. Replace each placeholder marked with << >> with generated content
+2. The user's content request is wrapped in ([{< >}]) to distinguish it from instructions
+3. Follow the format requirements specified after each user prompt
+4. Maintain the existing structure and formatting of the template
+5. Only replace the placeholders - do not modify any other text
+6. Generate content that matches the tone and style requested
+7. Respond only with the transformed content - do not include any explanations or additional text
+
+TEMPLATE
+
+{
+  "data": [
+<<Replace this placeholder with JSON array items using this user prompt: ([{<three orders objects with id and status fields>}]). Format requirements: Produce JSON array items separated by commas, without the enclosing square brackets, each item of type object (any means use whichever JSON type best fits the prompt), valid inside the surrounding array in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>
+  ],
+  "page": 1,
+  "total": <<Replace this placeholder with a JSON number using this user prompt: ([{<a plausible total count of orders>}]). Format requirements: Produce a single JSON number literal of kind integer (integer=a whole number, decimal=may have a fractional part, any=whichever kind fits the prompt), without quotes, exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>,
+  "summary": <<Replace this placeholder with a JSON value using this user prompt: ([{<a one-line summary of the orders collection>}]). Format requirements: Produce a single JSON value of type any (any means use whichever JSON type best fits the prompt), exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>
+}
+
+{
+  "error": {
+    "code": "not_found",
+    "message": <<Replace this placeholder with a JSON string using this user prompt: ([{<a message about a missing orders resource>}]). Format requirements: Produce a single JSON string literal including its surrounding double quotes, exactly as it must appear at this position in the enclosing JSON document. Output raw, valid JSON only - no markdown code fences, no surrounding commentary, and no explanation.>>
+  }
+}
