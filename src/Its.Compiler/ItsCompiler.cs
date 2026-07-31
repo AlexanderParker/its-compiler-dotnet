@@ -67,12 +67,13 @@ public sealed partial class ItsCompiler
         var instructionTypes = await LoadInstructionTypesAsync(template, baseUrl, cancellationToken);
 
         var content = (JsonArray)template["content"]!.DeepClone();
-        var processed = variableProcessor.ProcessContent(content, merged);
+        var objectReferences = new Dictionary<string, JsonNode?>();
+        var processed = variableProcessor.ProcessContent(content, merged, objectReferences);
 
         var evaluator = new ConditionalEvaluator(_options, variableProcessor);
         var finalContent = EvaluateConditionals(processed, evaluator, merged);
 
-        var prompt = GeneratePrompt(finalContent, instructionTypes, template, merged);
+        var prompt = GeneratePrompt(finalContent, instructionTypes, template, merged, objectReferences);
         return new CompilationResult { Prompt = prompt, Warnings = Array.Empty<string>() };
     }
 
@@ -219,7 +220,8 @@ public sealed partial class ItsCompiler
     }
 
     private string GeneratePrompt(
-        JsonArray content, Dictionary<string, JsonObject> instructionTypes, JsonObject template, JsonObject variables)
+        JsonArray content, Dictionary<string, JsonObject> instructionTypes, JsonObject template, JsonObject variables,
+        Dictionary<string, JsonNode?> objectReferences)
     {
         var compilerConfig = template["compilerConfig"] as JsonObject ?? new JsonObject();
         var systemPrompt = compilerConfig["systemPrompt"]?.GetValue<string>() ?? _options.SystemPrompt;
@@ -231,6 +233,13 @@ public sealed partial class ItsCompiler
         // Reference data: variables named by placeholder dataSource configs are
         // rendered once above the template as context the model must not output
         var dataSources = ReferenceData.CollectDataSources(content);
+        foreach (var name in objectReferences.Keys)
+        {
+            if (dataSources.All(request => request.Name != name))
+            {
+                dataSources.Add(new ReferenceData.DataSourceRequest(name, null));
+            }
+        }
         var referenceParts = new List<string>();
         if (dataSources.Count > 0)
         {
@@ -238,7 +247,8 @@ public sealed partial class ItsCompiler
             referenceParts.Add("");
             foreach (var request in dataSources)
             {
-                if (!variables.TryGetPropertyValue(request.Name, out var value))
+                if (!variables.TryGetPropertyValue(request.Name, out var value)
+                    && !objectReferences.TryGetValue(request.Name, out value))
                 {
                     throw new ItsCompilationException(
                         $"Unknown data source '{request.Name}': no variable with that name");

@@ -75,47 +75,59 @@ internal sealed partial class VariableProcessor
         }
     }
 
-    /// <summary>Substitutes ${refs} throughout a content tree, returning a processed copy.</summary>
-    public JsonArray ProcessContent(JsonArray content, JsonObject variables)
+    /// <summary>
+    /// Substitutes ${refs} throughout a content tree, returning a processed
+    /// copy. When objectReferences is provided, references resolving to
+    /// objects substitute a pointer ("the settings reference data") and the
+    /// object is collected for the REFERENCE DATA section.
+    /// </summary>
+    public JsonArray ProcessContent(JsonArray content, JsonObject variables, Dictionary<string, JsonNode?>? objectReferences = null)
     {
         var processed = new JsonArray();
         foreach (var element in content)
         {
-            processed.Add(ProcessNode(element?.DeepClone(), variables));
+            processed.Add(ProcessNode(element?.DeepClone(), variables, objectReferences));
         }
         return processed;
     }
 
-    private JsonNode? ProcessNode(JsonNode? node, JsonObject variables)
+    private JsonNode? ProcessNode(JsonNode? node, JsonObject variables, Dictionary<string, JsonNode?>? objectReferences)
     {
         switch (node)
         {
             case JsonObject obj:
                 foreach (var key in obj.Select(pair => pair.Key).ToList())
                 {
-                    obj[key] = ProcessNode(obj[key], variables);
+                    // Condition strings never carry object pointers
+                    var collector = key == "condition" ? null : objectReferences;
+                    obj[key] = ProcessNode(obj[key], variables, collector);
                 }
                 return obj;
             case JsonArray array:
                 for (var i = 0; i < array.Count; i++)
                 {
                     var item = array[i];
-                    array[i] = ProcessNode(item?.DeepClone(), variables);
+                    array[i] = ProcessNode(item?.DeepClone(), variables, objectReferences);
                 }
                 return array;
             case JsonValue value when value.TryGetValue<string>(out var text):
-                return JsonValue.Create(SubstituteReferences(text, variables));
+                return JsonValue.Create(SubstituteReferences(text, variables, objectReferences));
             default:
                 return node;
         }
     }
 
-    public string SubstituteReferences(string text, JsonObject variables)
+    public string SubstituteReferences(string text, JsonObject variables, Dictionary<string, JsonNode?>? objectReferences = null)
     {
         return VariablePattern().Replace(text, match =>
         {
             var reference = match.Groups[1].Value.Trim();
             var resolved = ResolveReference(reference, variables);
+            if (objectReferences is not null && resolved is JsonObject)
+            {
+                objectReferences[reference] = resolved;
+                return $"the {reference} reference data";
+            }
             return ConvertToString(resolved);
         });
     }
