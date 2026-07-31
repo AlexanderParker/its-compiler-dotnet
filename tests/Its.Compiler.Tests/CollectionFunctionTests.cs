@@ -45,12 +45,14 @@ public class CollectionFunctionTests
     }
 
     [Theory]
-    [InlineData("${forecast[0].sum(high)}")]
-    [InlineData("${forecast.sum(missing)}")]
-    [InlineData("${forecast.sum(day)}")]
-    [InlineData("${forecast.top(x)}")]
-    public async Task Invalid_usages_fail(string reference)
+    [InlineData("${forecast[0].sum(high)}", "sum() requires an array")]
+    [InlineData("${forecast.sum(missing)}", "Property 'missing' not found on every item")]
+    [InlineData("${forecast.sum(day)}", "sum() requires numeric values")]
+    [InlineData("${forecast.top(x)}", "top() requires a non-negative integer")]
+    [InlineData("${forecast.concat(day).sum()}", "sum() requires an array")]
+    public async Task Invalid_usages_fail(string reference, string expectedMessage)
     {
-        await Assert.ThrowsAnyAsync<ItsCompilationException>(() => CompileTextAsync(reference));
+        var error = await Assert.ThrowsAnyAsync<ItsCompilationException>(() => CompileTextAsync(reference));
+        Assert.Contains(expectedMessage, error.Message);
     }
 }

@@ -24,6 +24,9 @@ public class ConditionalAndLimitTests
     private static async Task<bool> Evaluates(string condition, JsonObject variables)
     {
         var result = await new ItsCompiler().CompileAsync(TemplateWithCondition(condition, variables));
+        // Exactly one branch must be emitted: a false condition emits the
+        // else content, not nothing
+        Assert.True(result.Prompt.Contains("YES") ^ result.Prompt.Contains("NO"));
         return result.Prompt.Contains("YES");
     }
 
@@ -32,13 +35,19 @@ public class ConditionalAndLimitTests
     [InlineData("a == true and b > 3", true)]
     [InlineData("!a || b == 10", false)]
     [InlineData("not a or b == 5", true)]
+    [InlineData("b != 4", true)]
+    [InlineData("b != 5", false)]
     [InlineData("1 < b <= 5", true)]
+    [InlineData("5 < b < 3", false)]
     [InlineData("name == 'orders'", true)]
     [InlineData("name in ['orders', 'invoices']", true)]
+    [InlineData("name not in ['orders', 'invoices']", false)]
     [InlineData("'xyz' not in name", true)]
+    [InlineData("'ord' in name", true)]
     [InlineData("-b < 0", true)]
     [InlineData("items.length == 2", true)]
     [InlineData("items[0] == 'first'", true)]
+    [InlineData("items[-1] == 'second'", true)]
     [InlineData("settings.enabled == true", true)]
     public async Task Spec_operators_evaluate(string condition, bool expected)
     {
@@ -66,7 +75,9 @@ public class ConditionalAndLimitTests
         };
 
         var strict = new ItsCompiler(new CompilerOptions { MaxVariableCount = 50 });
-        await Assert.ThrowsAsync<ItsVariableException>(() => strict.CompileAsync(template));
+        var error = await Assert.ThrowsAsync<ItsVariableException>(() => strict.CompileAsync(template));
+        Assert.Contains("Too many variables", error.Message);
+        Assert.Contains("(max: 50)", error.Message);
 
         var permissive = await new ItsCompiler().CompileAsync(template);
         Assert.Contains("hello", permissive.Prompt);
@@ -87,10 +98,17 @@ public class ConditionalAndLimitTests
         };
 
         var arrayLimited = new ItsCompiler(new CompilerOptions { MaxVariableArrayItems = 2 });
-        await Assert.ThrowsAsync<ItsVariableException>(() => arrayLimited.CompileAsync((JsonObject)template.DeepClone()));
+        var arrayError = await Assert.ThrowsAsync<ItsVariableException>(
+            () => arrayLimited.CompileAsync((JsonObject)template.DeepClone()));
+        Assert.Contains("Array too large", arrayError.Message);
 
         var textLimited = new ItsCompiler(new CompilerOptions { MaxTextLength = 40 });
-        await Assert.ThrowsAsync<ItsVariableException>(() => textLimited.CompileAsync((JsonObject)template.DeepClone()));
+        var textError = await Assert.ThrowsAsync<ItsVariableException>(
+            () => textLimited.CompileAsync((JsonObject)template.DeepClone()));
+        Assert.Contains("String value too long", textError.Message);
+
+        var permissive = await new ItsCompiler().CompileAsync((JsonObject)template.DeepClone());
+        Assert.Contains("hello", permissive.Prompt);
     }
 
     [Fact]

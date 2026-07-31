@@ -358,6 +358,16 @@ internal sealed class ConditionalEvaluator
                     _position += 3;
                     continue;
                 }
+                if (Current.Kind == TokenKind.Operator && Current.Text == "["
+                    && _position + 3 < _tokens.Count
+                    && _tokens[_position + 1] is { Kind: TokenKind.Operator, Text: "-" }
+                    && _tokens[_position + 2].Kind == TokenKind.Number
+                    && _tokens[_position + 3] is { Kind: TokenKind.Operator, Text: "]" })
+                {
+                    builder.Append("[-").Append(_tokens[_position + 2].Text).Append(']');
+                    _position += 4;
+                    continue;
+                }
                 break;
             }
             var resolved = _resolver.ResolveReference(builder.ToString(), _variables);
