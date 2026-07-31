@@ -8,6 +8,8 @@
 dotnet add package Its.Compiler
 ```
 
+NuGet publication is pending; until then, reference the `src/Its.Compiler` project directly.
+
 Targets .NET 8.
 
 ## Usage
@@ -31,11 +33,26 @@ var fromFile = await new ItsCompiler(new CompilerOptions { AllowLocalFileSchemas
 Feature parity with the reference compilers:
 
 - Variable substitution: `${name}`, `${user.name}`, `${items[0]}`, `${items[-1]}`, `${items.length}`
-- Conditionals with the specification's operators (`==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `in`, `not in`, chained comparisons, array literals) plus `and`/`or`/`not` equivalents
+- Collection functions (`concat`, `sum`, `avg`, `min`, `max`, `top`) as chainable suffixes on array references, substitution only
+- Object-valued references substituting the pointer text "the X reference data" and rendering automatically as reference data
+- Conditionals with the specification's operators (`==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`, `!`, `in`, `not in`, chained comparisons, array literals, negative array indices) plus `and`/`or`/`not` equivalents
 - Instruction types through `extends` with the complete-override precedence rules and `customInstructionTypes`
 - `configSchema` defaults substituted for omitted placeholder config, booleans rendered JSON-style
-- Reference data: `dataSource` / `dataLimit` placeholder config rendered as a `REFERENCE DATA` section above the template (arrays of objects as tables, plain objects as field tables), with the context-only processing instruction
+- Reference data: `dataSource` / `dataLimit` placeholder config rendered as a `REFERENCE DATA` section above the template (arrays of objects as tables, plain objects as field tables), with the context-only processing instruction; `dataLimit` values for the same variable merge with the largest winning, and no limit beats any limit
 - Configurable processing limits (see below)
+
+## Published type libraries
+
+Templates import instruction types through `extends`. The specification publishes these libraries under `https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/`:
+
+| Library | File | Purpose |
+| --- | --- | --- |
+| Standard Types | `its-standard-types-v1.json` | Prose content: titles, lists, paragraphs, tables, dialogue and more |
+| JSON Types | `its-json-types-v1.json` | Value fills inside JSON structure authored in the template: json_string, json_number, json_value, json_array_items, json_object_fields |
+| HTML Types | `its-html-types-v1.json` | Fills inside literal markup: html_text, html_fragment, html_list_items, html_table_rows, html_form_fields |
+| YAML Types | `its-yaml-types-v1.json` | Fills inside literal YAML: yaml_value, yaml_list_items, yaml_block |
+
+The structured-output libraries (JSON, HTML, YAML) instruct the model to emit raw output with no markdown code fences and no commentary. If a placeholder omits a config property, defaults declared in the library's `configSchema` are substituted into the compiled instruction.
 
 ## Processing limits
 
@@ -71,6 +88,17 @@ func azure functionapp publish <your-function-app>
 ```
 
 Processing limits are configurable per environment through the `ITS_*` application settings above. The function holds no state and no model keys: it compiles templates deterministically, so downstream steps (a Logic App, Workato recipe or any orchestrator) pass the compiled prompt to whichever governed LLM connector the organisation already uses.
+
+## HTTP compile service sample
+
+`samples/Its.Compiler.Service` is an ASP.NET minimal API exposing the same compile contract over plain HTTP:
+
+```
+POST /compile
+GET  /health
+```
+
+CORS origins come from `ITS_CORS_ORIGINS` (comma-separated), defaulting to the studio demo origins, and the service binds to the port given by `PORT`. The repo-root `Dockerfile` builds this sample, and `railway.json` deploys it with the `/health` check. It backs the "Server (.NET)" engine of the live demo at https://alexanderparker.github.io/its-template-studio/.
 
 ## Security model
 
