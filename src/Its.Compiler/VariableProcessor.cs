@@ -144,9 +144,28 @@ internal sealed partial class VariableProcessor
         }
     }
 
-    /// <summary>Resolves a reference like user.name, items[0].sku or features.length.</summary>
+    /// <summary>Resolves a reference like user.name, items[0].sku, features.length or forecast.top(3).concat(day).</summary>
     public JsonNode? ResolveReference(string reference, JsonObject variables)
     {
+        // Collection functions are a suffix chain applied after path resolution
+        var calls = new List<(string Name, string? Arg)>();
+        var baseReference = reference;
+        for (var match = FunctionSuffixPattern().Match(baseReference); match.Success;
+             match = FunctionSuffixPattern().Match(baseReference))
+        {
+            calls.Insert(0, (match.Groups[2].Value, match.Groups[3].Success ? match.Groups[3].Value : null));
+            baseReference = match.Groups[1].Value;
+        }
+        if (calls.Count > 0)
+        {
+            var value = ResolveReference(baseReference, variables);
+            foreach (var call in calls)
+            {
+                value = ApplyCollectionFunction(value, call.Name, call.Arg, reference);
+            }
+            return value;
+        }
+
         var wantsLength = false;
         var path = reference;
         if (path.EndsWith(".length", StringComparison.Ordinal))
@@ -191,6 +210,92 @@ internal sealed partial class VariableProcessor
             };
         }
         return current;
+    }
+
+    [GeneratedRegex(@"^(.*)\.(concat|sum|avg|min|max|top)\(\s*([A-Za-z_][A-Za-z0-9_]*|\d+)?\s*\)$")]
+    private static partial Regex FunctionSuffixPattern();
+
+    private static string ConcatText(JsonNode? item)
+    {
+        if (item is null) return "null";
+        if (item is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text)) return text;
+            if (value.GetValueKind() == System.Text.Json.JsonValueKind.True) return "true";
+            if (value.GetValueKind() == System.Text.Json.JsonValueKind.False) return "false";
+        }
+        return item.ToJsonString();
+    }
+
+    private static JsonNode? ApplyCollectionFunction(JsonNode? value, string name, string? arg, string reference)
+    {
+        if (value is not JsonArray array)
+        {
+            throw new ItsVariableException($"Function {name}() requires an array in reference '{reference}'");
+        }
+
+        if (name == "top")
+        {
+            if (arg is null || !int.TryParse(arg, out var count) || count < 0)
+            {
+                throw new ItsVariableException($"top() requires a non-negative integer in reference '{reference}'");
+            }
+            var sliced = new JsonArray();
+            foreach (var item in array.Take(count))
+            {
+                sliced.Add(item?.DeepClone());
+            }
+            return sliced;
+        }
+
+        var items = new List<JsonNode?>();
+        foreach (var item in array)
+        {
+            if (arg is null)
+            {
+                if (item is JsonObject or JsonArray)
+                {
+                    throw new ItsVariableException(
+                        $"Function {name}() requires a property name for object items in reference '{reference}'");
+                }
+                items.Add(item);
+            }
+            else
+            {
+                if (item is not JsonObject obj || !obj.TryGetPropertyValue(arg, out var extracted))
+                {
+                    throw new ItsVariableException($"Property '{arg}' not found on every item in reference '{reference}'");
+                }
+                items.Add(extracted);
+            }
+        }
+
+        if (name == "concat")
+        {
+            return JsonValue.Create(string.Join(", ", items.Select(ConcatText)));
+        }
+
+        var numbers = new List<double>();
+        foreach (var item in items)
+        {
+            if (item is not JsonValue number || number.GetValueKind() != System.Text.Json.JsonValueKind.Number)
+            {
+                throw new ItsVariableException($"Function {name}() requires numeric values in reference '{reference}'");
+            }
+            numbers.Add(double.Parse(number.ToJsonString(), System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        if (name == "sum") return JsonValue.Create(numbers.Sum());
+        if (numbers.Count == 0)
+        {
+            throw new ItsVariableException($"{name}() of an empty array in reference '{reference}'");
+        }
+        return name switch
+        {
+            "avg" => JsonValue.Create(numbers.Average()),
+            "min" => JsonValue.Create(numbers.Min()),
+            _ => JsonValue.Create(numbers.Max()),
+        };
     }
 
     private readonly record struct PathPart(string? Name, int? Index);
