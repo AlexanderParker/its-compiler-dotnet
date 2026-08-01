@@ -1,0 +1,54 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-base-schema-v1.json",
+  "version": "1.0.0",
+  "extends": ["./its-markdown-types-v1.json"],
+  "variables": {
+    "projectName": "example-storefront",
+    "includeInstall": true
+  },
+  "content": [
+    { "type": "text", "text": "# ${projectName} release notes\n\nSummary: " },
+    {
+      "type": "placeholder",
+      "instructionType": "markdown_text",
+      "config": {
+        "description": "a one-line summary of the ${projectName} release"
+      }
+    },
+    { "type": "text", "text": "\n\n## Features\n\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "markdown_list_items",
+      "config": {
+        "description": "three headline features of ${projectName}",
+        "itemCount": 3
+      }
+    },
+    { "type": "text", "text": "\n\n| Package | Version |\n| --- | --- |\n" },
+    {
+      "type": "placeholder",
+      "instructionType": "markdown_table_rows",
+      "config": {
+        "description": "package and version rows for ${projectName}",
+        "rows": 3,
+        "columns": 2
+      }
+    },
+    {
+      "type": "conditional",
+      "condition": "includeInstall == true",
+      "content": [
+        { "type": "text", "text": "\n\n## Installation\n\n```bash\n" },
+        {
+          "type": "placeholder",
+          "instructionType": "markdown_code",
+          "config": {
+            "description": "shell commands that install ${projectName}",
+            "language": "bash"
+          }
+        },
+        { "type": "text", "text": "\n```" }
+      ]
+    }
+  ]
+}
