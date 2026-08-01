@@ -2,8 +2,8 @@
   "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-type-extension-schema-v1.json",
   "$id": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-html-types-v1.json",
   "title": "Instruction Template Specification - HTML Types v1.0",
-  "description": "Type library for filling positions inside HTML markup authored in the template; the template text carries the surrounding tags and attributes verbatim, never full documents",
-  "version": "1.0.0",
+  "description": "Type library for filling positions inside HTML markup authored in the template and for generating complete common elements; the template text carries the surrounding tags and attributes verbatim, never full documents",
+  "version": "1.1.0",
   "instructionTypes": {
     "html_text": {
       "template": "<<Replace this placeholder with HTML text content using this user prompt: ([{<{description}>}]). Format requirements: Produce text content for the enclosing element without repeating or closing its tags, escaping HTML special characters in the text. Inline markup such as strong, em and a is allowed: {allowInlineMarkup}. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
@@ -79,6 +79,154 @@
     "html_form_fields": {
       "template": "<<Replace this placeholder with HTML form fields using this user prompt: ([{<{description}>}]). Format requirements: Produce form field controls valid at this position inside the enclosing form or container, without producing a form element. Include a label element for each control: {includeLabels}. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
       "description": "Generates labelled form controls for a position inside a form or container authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "fieldCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 15,
+            "description": "If specified, the exact number of form fields to generate"
+          },
+          "includeLabels": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "html_heading": {
+      "template": "<<Replace this placeholder with an HTML heading using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete h{level} element including its opening and closing tags, with text content only. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete heading element at a stated level",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "default": 2
+          }
+        }
+      }
+    },
+    "html_paragraph": {
+      "template": "<<Replace this placeholder with an HTML paragraph using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete p element including its opening and closing tags, escaping HTML special characters in the text. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete paragraph element"
+    },
+    "html_link": {
+      "template": "<<Replace this placeholder with an HTML link using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete a element with an href attribute and link text. Use https://www.example.com for illustrative URLs unless the prompt supplies one. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete anchor element with an href and link text"
+    },
+    "html_image": {
+      "template": "<<Replace this placeholder with an HTML image using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete img element with a src attribute and descriptive alt text. Use example.com for illustrative URLs unless the prompt supplies one. Wrap the image in a figure element with a figcaption: {includeCaption}. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete image element with a source and descriptive alternative text",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "includeCaption": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "html_list": {
+      "template": "<<Replace this placeholder with an HTML list using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete {listType} list element including its items (a ul element for unordered, an ol element for ordered, a dl element with dt and dd pairs for description). Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete list element including its items",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "listType": {
+            "type": "string",
+            "enum": [
+              "unordered",
+              "ordered",
+              "description"
+            ],
+            "default": "unordered"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "If specified, the exact number of items to generate"
+          }
+        }
+      }
+    },
+    "html_table": {
+      "template": "<<Replace this placeholder with an HTML table using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete table element containing tr rows of td cells inside a tbody. Include a thead with header cells: {includeHeader}. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete table element including its rows",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "If specified, the exact number of rows to generate"
+          },
+          "columns": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 10,
+            "description": "If specified, the number of cells per row"
+          },
+          "includeHeader": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "html_section": {
+      "template": "<<Replace this placeholder with an HTML section using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete section element opening with an h{headingLevel} heading followed by content elements matching the prompt. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete section element opening with a heading",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "headingLevel": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "default": 2
+          }
+        }
+      }
+    },
+    "html_blockquote": {
+      "template": "<<Replace this placeholder with an HTML block quote using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete blockquote element including its opening and closing tags. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete blockquote element"
+    },
+    "html_code_block": {
+      "template": "<<Replace this placeholder with an HTML code block using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete pre element containing a code element, escaping HTML special characters in the code. When the prompt states a language, mark it with a class attribute in the form language-... on the code element. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete pre element containing a code element",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "If specified, the programming language for the code element's language-... class"
+          }
+        }
+      }
+    },
+    "html_form": {
+      "template": "<<Replace this placeholder with an HTML form using this user prompt: ([{<{description}>}]). Format requirements: Produce a complete form element containing form field controls and a submit button. Include a label element for each control: {includeLabels}. Output raw, valid HTML only - no markdown code fences, no surrounding commentary, and no explanation.>>",
+      "description": "Generates a complete form element with labelled controls and a submit button",
       "configSchema": {
         "type": "object",
         "properties": {

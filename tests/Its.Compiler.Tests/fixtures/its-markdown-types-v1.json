@@ -1,0 +1,103 @@
+{
+  "$schema": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-type-extension-schema-v1.json",
+  "$id": "https://alexanderparker.github.io/instruction-template-specification/schema/v1.0/its-markdown-types-v1.json",
+  "title": "Instruction Template Specification - Markdown Types v1.0",
+  "description": "Type library for filling positions inside Markdown documents authored in the template; the template text carries the document's headings, list markers, table headers and code fences verbatim",
+  "version": "1.0.0",
+  "instructionTypes": {
+    "markdown_text": {
+      "template": "<<Replace this placeholder with inline Markdown text using this user prompt: ([{<{description}>}]). Format requirements: Produce a single line of text valid at the current position in the surrounding line, with no block-level constructs. Inline formatting such as bold, italic, code spans and links is allowed: {allowFormatting}. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>",
+      "description": "Generates an inline text run for a position inside a line authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "allowFormatting": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "examples": [
+        {
+          "config": {
+            "description": "a short tagline for the release",
+            "allowFormatting": true
+          },
+          "output": "<<Replace this placeholder with inline Markdown text using this user prompt: ([{<a short tagline for the release>}]). Format requirements: Produce a single line of text valid at the current position in the surrounding line, with no block-level constructs. Inline formatting such as bold, italic, code spans and links is allowed: true. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>"
+        }
+      ]
+    },
+    "markdown_block": {
+      "template": "<<Replace this placeholder with Markdown blocks using this user prompt: ([{<{description}>}]). Format requirements: Produce one or more complete Markdown blocks using standard notation - headings, paragraphs, bullet and numbered lists, task lists, block quotes, fenced code blocks, tables, links, images and horizontal rules - separated by blank lines and valid at this position in the enclosing document. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>",
+      "description": "Generates one or more complete Markdown blocks for a position authored in the template"
+    },
+    "markdown_list_items": {
+      "template": "<<Replace this placeholder with Markdown list items using this user prompt: ([{<{description}>}]). Format requirements: Produce list items, one per line, using {listType} markers (a hyphen and a space for bullet items, numbers in the 1. style for numbered items, - [ ] for task items), producing the number of items the prompt asks for, valid at this position in the enclosing document. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>",
+      "description": "Generates list items, one per line, for a position authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "listType": {
+            "type": "string",
+            "enum": [
+              "bullet",
+              "numbered",
+              "task"
+            ],
+            "default": "bullet"
+          },
+          "itemCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "If specified, the exact number of items to generate"
+          }
+        }
+      },
+      "examples": [
+        {
+          "config": {
+            "description": "the headline features shipped in this release",
+            "listType": "bullet",
+            "itemCount": 3
+          },
+          "output": "<<Replace this placeholder with Markdown list items using this user prompt: ([{<the headline features shipped in this release>}]). Format requirements: Produce list items, one per line, using bullet markers (a hyphen and a space for bullet items, numbers in the 1. style for numbered items, - [ ] for task items), producing the number of items the prompt asks for, valid at this position in the enclosing document. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>"
+        }
+      ]
+    },
+    "markdown_table_rows": {
+      "template": "<<Replace this placeholder with Markdown table rows using this user prompt: ([{<{description}>}]). Format requirements: Produce table body rows, each row on its own line in the form | cell | cell |, matching the column count of the header row authored in the surrounding table, producing the number of rows the prompt asks for, without producing a header or separator row. Output raw, valid Markdown only - no surrounding commentary and no explanation, and do not wrap the output in code fences.>>",
+      "description": "Generates body rows for a table whose header row is authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "rows": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "description": "If specified, the exact number of rows to generate"
+          },
+          "columns": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 10,
+            "description": "If specified, the number of cells per row"
+          }
+        }
+      }
+    },
+    "markdown_code": {
+      "template": "<<Replace this placeholder with code using this user prompt: ([{<{description}>}]). Format requirements: Produce the contents of the fenced code block whose fences are authored around this position, without repeating the fences, in the language stated on the opening fence where one is given. Output raw code only - no code fences, no surrounding commentary and no explanation.>>",
+      "description": "Generates the contents of a fenced code block whose fences are authored in the template",
+      "configSchema": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string",
+            "description": "If specified, the programming language the code should be written in"
+          }
+        }
+      }
+    }
+  }
+}

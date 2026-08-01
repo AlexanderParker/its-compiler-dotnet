@@ -49,10 +49,11 @@ Templates import instruction types through `extends`. The specification publishe
 | --- | --- | --- |
 | Standard Types | `its-standard-types-v1.json` | Prose content: titles, lists, paragraphs, tables, dialogue and more |
 | JSON Types | `its-json-types-v1.json` | Value fills inside JSON structure authored in the template: json_string, json_number, json_value, json_array_items, json_object_fields |
-| HTML Types | `its-html-types-v1.json` | Fills inside literal markup: html_text, html_fragment, html_list_items, html_table_rows, html_form_fields |
+| HTML Types | `its-html-types-v1.json` | 5 position fills (html_text, html_fragment, html_list_items, html_table_rows, html_form_fields) plus 10 complete-element generators (html_heading, html_paragraph, html_link, html_image, html_list, html_table, html_section, html_blockquote, html_code_block, html_form) |
 | YAML Types | `its-yaml-types-v1.json` | Fills inside literal YAML: yaml_value, yaml_list_items, yaml_block |
+| Markdown Types | `its-markdown-types-v1.json` | Fills inside literal Markdown: markdown_text, markdown_block, markdown_list_items, markdown_table_rows, markdown_code |
 
-The structured-output libraries (JSON, HTML, YAML) instruct the model to emit raw output with no markdown code fences and no commentary. If a placeholder omits a config property, defaults declared in the library's `configSchema` are substituted into the compiled instruction.
+The structured-output libraries (JSON, HTML, YAML, Markdown) instruct the model to emit raw output with no code fences and no commentary. If a placeholder omits a config property, defaults declared in the library's `configSchema` are substituted into the compiled instruction.
 
 ## Processing limits
 
