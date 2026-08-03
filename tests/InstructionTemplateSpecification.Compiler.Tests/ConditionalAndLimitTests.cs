@@ -1,7 +1,7 @@
 using System.Text.Json.Nodes;
 using Xunit;
 
-namespace Its.Compiler.Tests;
+namespace InstructionTemplateSpecification.Compiler.Tests;
 
 public class ConditionalAndLimitTests
 {

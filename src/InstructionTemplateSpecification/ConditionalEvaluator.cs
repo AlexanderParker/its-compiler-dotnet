@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json.Nodes;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Evaluates conditional expressions with the specification's operators

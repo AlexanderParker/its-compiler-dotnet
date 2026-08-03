@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace Its.Compiler.Tests;
+namespace InstructionTemplateSpecification.Compiler.Tests;
 
 /// <summary>
 /// The two versions this compiler reports must stay distinct and must stay

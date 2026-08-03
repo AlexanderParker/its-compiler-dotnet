@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Its.Compiler.Tests;
+namespace InstructionTemplateSpecification.Compiler.Tests;
 
 /// <summary>
 /// Cross-compiler parity: the compiled prompt must match the Python

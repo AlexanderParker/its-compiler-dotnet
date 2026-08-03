@@ -1,4 +1,4 @@
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Compiler configuration: security policy, processing limits and prompt

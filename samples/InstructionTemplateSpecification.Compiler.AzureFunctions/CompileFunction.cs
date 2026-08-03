@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 
-namespace Its.Compiler.AzureFunctions;
+namespace InstructionTemplateSpecification.AzureFunctions;
 
 /// <summary>
 /// HTTP compile endpoint matching the ITS compile service contract:

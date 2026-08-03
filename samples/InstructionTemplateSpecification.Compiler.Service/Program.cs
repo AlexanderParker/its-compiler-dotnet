@@ -1,5 +1,5 @@
 using System.Text.Json.Nodes;
-using Its.Compiler;
+using InstructionTemplateSpecification;
 
 // HTTP compile service exposing the standard ITS compile contract, matching
 // the Python FastAPI service:
