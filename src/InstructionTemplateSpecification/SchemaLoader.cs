@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.Json.Nodes;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Loads instruction type schemas referenced through extends. Https URLs are

@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Its.Compiler.Tests;
+namespace InstructionTemplateSpecification.Compiler.Tests;
 
 /// <summary>
 /// Runs the shared its-example-templates corpus, mirroring the Python

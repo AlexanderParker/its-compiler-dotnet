@@ -4,13 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Its.Compiler.Service</RootNamespace>
+    <RootNamespace>InstructionTemplateSpecification.Compiler.Service</RootNamespace>
     <IsPackable>false</IsPackable>
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Its.Compiler\Its.Compiler.csproj" />
+    <ProjectReference Include="..\..\src\InstructionTemplateSpecification\InstructionTemplateSpecification.Compiler.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>Base exception for all ITS compilation failures.</summary>
 public class ItsCompilationException : Exception

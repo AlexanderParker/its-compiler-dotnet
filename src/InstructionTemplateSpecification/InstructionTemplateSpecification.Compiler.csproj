@@ -5,8 +5,8 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Its.Compiler</RootNamespace>
-    <PackageId>Its.Compiler</PackageId>
+    <RootNamespace>InstructionTemplateSpecification</RootNamespace>
+    <PackageId>InstructionTemplateSpecification.Compiler</PackageId>
     <Version>0.1.0</Version>
     <Authors>Alexander Parker</Authors>
     <Description>.NET implementation of the Instruction Template Specification (ITS) compiler: compiles JSON templates with placeholders, variables, conditionals and reference data into structured AI prompts.</Description>

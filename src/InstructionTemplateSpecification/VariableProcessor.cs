@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Resolves ${variable} references (dot properties, [index] access including

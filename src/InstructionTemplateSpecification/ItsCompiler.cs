@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Compiles Instruction Template Specification (ITS) templates into

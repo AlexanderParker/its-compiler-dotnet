@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Reference data sections: placeholders name tabular data sources through

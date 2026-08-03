@@ -1,21 +1,21 @@
-# Its.Compiler (.NET)
+# InstructionTemplateSpecification.Compiler (.NET)
 
 .NET implementation of the [Instruction Template Specification (ITS)](https://alexanderparker.github.io/instruction-template-specification/) compiler. Compiles JSON templates with placeholders, variables, conditionals and reference data into structured AI prompts, with output byte-compatible with the JavaScript and Python reference compilers (verified by a golden-prompt parity test).
 
 ## Installation
 
 ```bash
-dotnet add package Its.Compiler
+dotnet add package InstructionTemplateSpecification.Compiler
 ```
 
-NuGet publication is pending; until then, reference the `src/Its.Compiler` project directly.
+NuGet publication is pending; until then, reference the `src/InstructionTemplateSpecification.Compiler` project directly.
 
 Targets .NET 8.
 
 ## Usage
 
 ```csharp
-using Its.Compiler;
+using InstructionTemplateSpecification;
 using System.Text.Json.Nodes;
 
 var template = (JsonObject)JsonNode.Parse(File.ReadAllText("template.json"))!;
@@ -72,7 +72,7 @@ All limits are operator-configurable through `CompilerOptions` or, with `Compile
 
 ## Azure Functions and API Management
 
-`samples/Its.Compiler.AzureFunctions` is a ready-to-deploy isolated-worker function app exposing the standard ITS compile contract:
+`samples/InstructionTemplateSpecification.Compiler.AzureFunctions` is a ready-to-deploy isolated-worker function app exposing the standard ITS compile contract:
 
 ```
 POST /api/compile
@@ -84,7 +84,7 @@ POST /api/compile
 Deploy it as a Function App and front it with API Management for authentication (subscription keys), rate limiting and policies:
 
 ```bash
-cd samples/Its.Compiler.AzureFunctions
+cd samples/InstructionTemplateSpecification.Compiler.AzureFunctions
 func azure functionapp publish <your-function-app>
 ```
 
@@ -92,7 +92,7 @@ Processing limits are configurable per environment through the `ITS_*` applicati
 
 ## HTTP compile service sample
 
-`samples/Its.Compiler.Service` is an ASP.NET minimal API exposing the same compile contract over plain HTTP:
+`samples/InstructionTemplateSpecification.Compiler.Service` is an ASP.NET minimal API exposing the same compile contract over plain HTTP:
 
 ```
 POST /compile
@@ -114,8 +114,8 @@ Parity with the Python reference compiler, verified by running the full shared t
 ## Development
 
 ```bash
-dotnet build Its.Compiler.sln
-dotnet test Its.Compiler.sln
+dotnet build InstructionTemplateSpecification.Compiler.sln
+dotnet test InstructionTemplateSpecification.Compiler.sln
 ```
 
 The test fixtures (type libraries and templates) are shared with its-compiler-js and its-compiler-python, and a golden-prompt test asserts byte parity with the Python compiler's output.

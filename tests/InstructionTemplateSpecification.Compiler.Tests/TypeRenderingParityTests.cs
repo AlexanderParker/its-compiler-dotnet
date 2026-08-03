@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using Xunit;
 
-namespace Its.Compiler.Tests;
+namespace InstructionTemplateSpecification.Compiler.Tests;
 
 /// <summary>
 /// Cross-compiler type-rendering parity.

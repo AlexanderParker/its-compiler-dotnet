@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace Its.Compiler;
+namespace InstructionTemplateSpecification;
 
 /// <summary>
 /// Version information for this compiler.

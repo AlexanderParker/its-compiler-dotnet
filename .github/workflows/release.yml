@@ -26,10 +26,10 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Test
-        run: dotnet test Its.Compiler.sln --configuration Release
+        run: dotnet test InstructionTemplateSpecification.Compiler.sln --configuration Release
 
       - name: Pack
-        run: dotnet pack src/Its.Compiler/Its.Compiler.csproj --configuration Release --output packages
+        run: dotnet pack src/InstructionTemplateSpecification/InstructionTemplateSpecification.Compiler.csproj --configuration Release --output packages
 
       # The issued key lasts an hour, so it is requested immediately before the
       # push rather than at the top of the job.

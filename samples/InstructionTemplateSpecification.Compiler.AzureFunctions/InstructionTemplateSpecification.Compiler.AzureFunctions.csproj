@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Its.Compiler.AzureFunctions</RootNamespace>
+    <RootNamespace>InstructionTemplateSpecification.Compiler.AzureFunctions</RootNamespace>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Its.Compiler\Its.Compiler.csproj" />
+    <ProjectReference Include="..\..\src\InstructionTemplateSpecification\InstructionTemplateSpecification.Compiler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
