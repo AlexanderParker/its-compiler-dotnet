@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - "v*"
+  # Lets a failed release be retried without moving or recreating the tag.
+  workflow_dispatch:
 
 # Stated explicitly rather than relying on the repository default, so the
 # permissions a workflow runs with are readable here.
