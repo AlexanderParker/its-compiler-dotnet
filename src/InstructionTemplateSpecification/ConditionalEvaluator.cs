@@ -43,7 +43,12 @@ internal sealed class ConditionalEvaluator
         }
         catch (Exception error)
         {
-            throw new ItsConditionalException($"Error evaluating condition '{expression}': {error.Message}");
+            // Wrapping at this boundary turns any evaluation failure into a
+            // compilation error the caller can act on. The cause is carried
+            // through rather than flattened to a message, so the original type
+            // and stack trace survive.
+            throw new ItsConditionalException(
+                $"Error evaluating condition '{expression}': {error.Message}", error);
         }
     }
 

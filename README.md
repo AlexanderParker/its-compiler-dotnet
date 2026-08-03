@@ -88,7 +88,7 @@ cd samples/InstructionTemplateSpecification.Compiler.AzureFunctions
 func azure functionapp publish <your-function-app>
 ```
 
-Processing limits are configurable per environment through the `ITS_*` application settings above. The function holds no state and no model keys: it compiles templates deterministically, so downstream steps (a Logic App, Workato recipe or any orchestrator) pass the compiled prompt to whichever governed LLM connector the organisation already uses.
+Processing limits are configurable per environment through the `ITS_*` application settings above. The function holds no state and no model keys: it compiles templates deterministically, so whatever orchestrates it passes the compiled prompt to whichever governed model connector the organisation already uses.
 
 ## HTTP compile service sample
 
@@ -133,3 +133,10 @@ The test fixtures (type libraries and templates) are shared with its-compiler-js
 ## License
 
 MIT - see [LICENSE](LICENSE).
+
+## Trademarks
+
+Third-party names are used only to describe interoperability, and no
+affiliation or endorsement is implied. .NET, ASP.NET and Azure are trademarks
+of Microsoft Corporation. All other trademarks are the property of their
+respective owners.

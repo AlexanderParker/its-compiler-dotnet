@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
@@ -203,7 +204,7 @@ internal sealed partial class VariableProcessor
         // dependent quirk of exactly the kind this is here to remove.
         var text = value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
 
-        var exponentAt = text.IndexOfAny(new[] { 'e', 'E' });
+        var exponentAt = text.IndexOfAny(['e', 'E']);
         if (exponentAt < 0)
         {
             // Whole values carry no decimal part: 1, never 1.0.
@@ -389,7 +390,12 @@ internal sealed partial class VariableProcessor
             }
             else
             {
-                yield return new PathPart(null, int.Parse(token.Groups["index"].Value));
+                // Invariant culture: an array index in a template is not a
+                // locale-formatted number, and parsing it as one would make
+                // path resolution depend on the machine's settings.
+                yield return new PathPart(
+                    null,
+                    int.Parse(token.Groups["index"].Value, CultureInfo.InvariantCulture));
             }
         }
     }
