@@ -1,0 +1,137 @@
+{
+  "version": "1.0.0",
+  "variables": {
+    "yes": true,
+    "no": false,
+    "nothing": null,
+    "wholeFloat": 1.0,
+    "fraction": 0.5,
+    "repeating": 0.1,
+    "negative": -42,
+    "negativeFraction": -0.25,
+    "zero": 0,
+    "big": 1000000000000000,
+    "small": 1e-07,
+    "precise": 1.005,
+    "words": [
+      "alpha",
+      "beta"
+    ],
+    "mixed": [
+      1,
+      true,
+      null,
+      "x",
+      2.5
+    ],
+    "numbers": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "thirds": [
+      1,
+      1,
+      1
+    ],
+    "money": [
+      0.1,
+      0.2
+    ],
+    "unicode": "café — naïve ☂",
+    "quoted": "she said \"hi\"",
+    "rows": [
+      {
+        "label": "a",
+        "value": 1.5,
+        "flag": true
+      },
+      {
+        "label": "b",
+        "value": 2.5,
+        "flag": false
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "text",
+      "text": "bool-true=${yes}\nbool-false=${no}\nnull=${nothing}\n"
+    },
+    {
+      "type": "text",
+      "text": "whole-float=${wholeFloat}\nfraction=${fraction}\nrepeating=${repeating}\n"
+    },
+    {
+      "type": "text",
+      "text": "negative=${negative}\nnegative-fraction=${negativeFraction}\nzero=${zero}\n"
+    },
+    {
+      "type": "text",
+      "text": "big=${big}\nsmall=${small}\nprecise=${precise}\n"
+    },
+    {
+      "type": "text",
+      "text": "array-strings=${words}\narray-mixed=${mixed}\n"
+    },
+    {
+      "type": "text",
+      "text": "unicode=${unicode}\nquoted=${quoted}\n"
+    },
+    {
+      "type": "text",
+      "text": "len-array=${words.length}\nlen-string=${unicode.length}\n"
+    },
+    {
+      "type": "text",
+      "text": "sum-int=${numbers.sum()}\navg-int=${numbers.avg()}\nmin=${numbers.min()}\nmax=${numbers.max()}\n"
+    },
+    {
+      "type": "text",
+      "text": "sum-float=${money.sum()}\navg-thirds=${thirds.avg()}\navg-money=${money.avg()}\n"
+    },
+    {
+      "type": "text",
+      "text": "concat-scalars=${words.concat()}\nconcat-mixed=${mixed.concat()}\n"
+    },
+    {
+      "type": "text",
+      "text": "concat-prop=${rows.concat(label)}\nsum-prop=${rows.sum(value)}\nconcat-flags=${rows.concat(flag)}\n"
+    },
+    {
+      "type": "text",
+      "text": "top2=${numbers.top(2)}\nindex-neg=${words[-1]}\nindex-0=${words[0]}\n"
+    },
+    {
+      "type": "conditional",
+      "condition": "yes and not no",
+      "content": [
+        {
+          "type": "text",
+          "text": "cond-bool=taken\n"
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": "wholeFloat == 1",
+      "content": [
+        {
+          "type": "text",
+          "text": "cond-float-eq-int=taken\n"
+        }
+      ]
+    },
+    {
+      "type": "conditional",
+      "condition": "\"alpha\" in words and negative < 0",
+      "content": [
+        {
+          "type": "text",
+          "text": "cond-in-and-negative=taken\n"
+        }
+      ]
+    }
+  ]
+}
