@@ -5,8 +5,8 @@ on:
     tags:
       - "v*"
 
-# Stated explicitly because the repository default is write. Jobs that need
-# more say so themselves; nothing inherits write access.
+# Stated explicitly rather than relying on the repository default, so the
+# permissions a workflow runs with are readable here.
 permissions:
   contents: read
   # Declared at workflow level rather than on the job. A job-level grant does
