@@ -40,8 +40,33 @@ var maxRequestBytes = ReadLimit("ITS_MAX_REQUEST_BYTES", 512 * 1024);
 // Reject an oversized body at the server before any handler reads it.
 builder.WebHost.ConfigureKestrel(options => options.Limits.MaxRequestBodySize = maxRequestBytes);
 
+// Held outside the options callback so the headers below can ask it how much
+// quota a caller has left. The framework's limiter reports that only when it
+// refuses, which is too late to be useful: a client that can see its remaining
+// quota can slow down before it is refused at all.
+PartitionedRateLimiter<HttpContext>? limiter = null;
+
 if (perMinute > 0)
 {
+    limiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+    {
+        // The health endpoint must answer even when a caller is throttled,
+        // or the platform's own probe trips the limiter.
+        if (context.Request.Path.StartsWithSegments("/health"))
+        {
+            return RateLimitPartition.GetNoLimiter("health");
+        }
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            ClientAddress(context),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = perMinute,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            });
+    });
+
     builder.Services.AddRateLimiter(options =>
     {
         options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -51,8 +76,11 @@ if (perMinute > 0)
             var retryAfter = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var value)
                 ? (int)value.TotalSeconds
                 : 60;
-            context.HttpContext.Response.Headers.RetryAfter =
-                retryAfter.ToString(CultureInfo.InvariantCulture);
+            var headers = context.HttpContext.Response.Headers;
+            headers.RetryAfter = retryAfter.ToString(CultureInfo.InvariantCulture);
+            headers["RateLimit-Limit"] = perMinute.ToString(CultureInfo.InvariantCulture);
+            headers["RateLimit-Remaining"] = "0";
+            headers["RateLimit-Reset"] = retryAfter.ToString(CultureInfo.InvariantCulture);
             await context.HttpContext.Response.WriteAsJsonAsync(
                 new
                 {
@@ -63,31 +91,42 @@ if (perMinute > 0)
                 token);
         };
 
-        options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-        {
-            // The health endpoint must answer even when a caller is throttled,
-            // or the platform's own probe trips the limiter.
-            if (context.Request.Path.StartsWithSegments("/health"))
-            {
-                return RateLimitPartition.GetNoLimiter("health");
-            }
-
-            return RateLimitPartition.GetFixedWindowLimiter(
-                ClientAddress(context),
-                _ => new FixedWindowRateLimiterOptions
-                {
-                    PermitLimit = perMinute,
-                    Window = TimeSpan.FromMinutes(1),
-                    QueueLimit = 0,
-                });
-        });
+        options.GlobalLimiter = limiter;
     });
 }
 
 var app = builder.Build();
 app.UseCors();
-if (perMinute > 0)
+if (limiter is not null)
 {
+    // Registered before the limiter so the callback is in place while the
+    // response is still being formed. Headers cannot be added once the body has
+    // started, and by the time the pipeline unwinds it has.
+    app.Use(async (context, next) =>
+    {
+        context.Response.OnStarting(() =>
+        {
+            // The health endpoint has no limiter partition, and a refused
+            // request has already reported its own figures.
+            if (!context.Request.Path.StartsWithSegments("/health")
+                && context.Response.StatusCode != StatusCodes.Status429TooManyRequests)
+            {
+                var statistics = limiter.GetStatistics(context);
+                if (statistics is not null)
+                {
+                    context.Response.Headers["RateLimit-Limit"] =
+                        perMinute.ToString(CultureInfo.InvariantCulture);
+                    context.Response.Headers["RateLimit-Remaining"] =
+                        statistics.CurrentAvailablePermits.ToString(CultureInfo.InvariantCulture);
+                }
+            }
+
+            return Task.CompletedTask;
+        });
+
+        await next();
+    });
+
     app.UseRateLimiter();
 }
 

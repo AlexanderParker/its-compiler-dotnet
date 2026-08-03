@@ -13,4 +13,8 @@
     <ProjectReference Include="..\..\src\InstructionTemplateSpecification\InstructionTemplateSpecification.Compiler.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="InstructionTemplateSpecification.Compiler.Service.Tests" />
+  </ItemGroup>
+
 </Project>
