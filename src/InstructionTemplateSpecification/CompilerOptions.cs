@@ -9,11 +9,14 @@ namespace InstructionTemplateSpecification;
 public sealed class CompilerOptions
 {
     // Network security
+
+    /// <summary>Permit schema URLs over plain http. Off by default; https only.</summary>
     public bool AllowHttp { get; set; }
 
     /// <summary>Permit extends to resolve local file paths relative to the template. Off by default.</summary>
     public bool AllowLocalFileSchemas { get; set; }
 
+    /// <summary>Schema URL prefixes trusted without further checks. Pre-populated with the published specification locations.</summary>
     public IList<string> TrustedSchemaPrefixes { get; } = new List<string>
     {
         "https://alexanderparker.github.io/instruction-template-specification/",
@@ -38,6 +41,7 @@ public sealed class CompilerOptions
     /// <summary>Block schema URLs that name or resolve to private, loopback or link-local addresses. On by default.</summary>
     public bool BlockPrivateNetworks { get; set; } = true;
 
+    /// <summary>How long a single schema fetch may take before it is abandoned.</summary>
     public TimeSpan RequestTimeout { get; set; } = TimeSpan.FromSeconds(10);
 
     /// <summary>Maximum schema response size in bytes.</summary>
@@ -50,20 +54,39 @@ public sealed class CompilerOptions
     public bool EnableContentScanning { get; set; } = true;
 
     // Processing limits (defaults match the reference compilers)
+
+    /// <summary>Largest template accepted, in bytes.</summary>
     public int MaxTemplateSize { get; set; } = 1024 * 1024;
+
+    /// <summary>Most content elements a template may contain, counted across all nesting levels.</summary>
     public int MaxContentElements { get; set; } = 1000;
+
+    /// <summary>Deepest nesting of conditionals permitted.</summary>
     public int MaxNestingDepth { get; set; } = 10;
+
+    /// <summary>Most variables accepted, counting nested properties.</summary>
     public int MaxVariableCount { get; set; } = 10000;
+
+    /// <summary>Most items permitted in any one array variable.</summary>
     public int MaxVariableArrayItems { get; set; } = 1000;
+
+    /// <summary>Longest string value accepted, in characters. Longer values are truncated when substituted.</summary>
     public int MaxTextLength { get; set; } = 10000;
+
+    /// <summary>Longest conditional expression accepted, in characters.</summary>
     public int MaxExpressionLength { get; set; } = 500;
+
+    /// <summary>Most type libraries a template may extend.</summary>
     public int MaxExtends { get; set; } = 10;
 
     // Prompt defaults (identical wording to the reference compilers)
+
+    /// <summary>Opening instruction placed above the compiled template.</summary>
     public string SystemPrompt { get; set; } =
         "You are an AI assistant that fills in content templates. Follow the instructions exactly and replace each "
         + "placeholder with appropriate content based on the user prompts provided. Respond only with the transformed content.";
 
+    /// <summary>Numbered rules telling the model how to treat placeholders and reference data.</summary>
     public IList<string> ProcessingInstructions { get; set; } = new List<string>
     {
         "Replace each placeholder marked with << >> with generated content",
@@ -75,6 +98,7 @@ public sealed class CompilerOptions
         "Respond only with the transformed content - do not include any explanations or additional text",
     };
 
+    /// <summary>Wrapper placed around each compiled placeholder instruction. {instruction} is substituted.</summary>
     public string InstructionWrapper { get; set; } = "<<{instruction}>>";
 
     /// <summary>
@@ -102,6 +126,9 @@ public sealed class CompilerOptions
 /// <summary>The result of compiling a template.</summary>
 public sealed class CompilationResult
 {
+    /// <summary>The compiled prompt, ready to send to a model.</summary>
     public required string Prompt { get; init; }
+
+    /// <summary>Non-fatal issues found while compiling, such as an overridden instruction type.</summary>
     public required IReadOnlyList<string> Warnings { get; init; }
 }

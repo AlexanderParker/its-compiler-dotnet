@@ -15,6 +15,8 @@ public sealed partial class ItsCompiler
     private readonly CompilerOptions _options;
     private readonly SchemaLoader _schemaLoader;
 
+    /// <summary>Creates a compiler.</summary>
+    /// <param name="options">Security policy, processing limits and prompt defaults. Defaults are used when omitted.</param>
     public ItsCompiler(CompilerOptions? options = null)
     {
         _options = options ?? new CompilerOptions();

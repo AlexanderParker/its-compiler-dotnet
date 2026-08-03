@@ -11,10 +11,14 @@ namespace InstructionTemplateSpecification;
 /// </summary>
 public static class ReferenceData
 {
+    /// <summary>The processing instruction added when a template requests reference data.</summary>
     public const string Instruction =
         "Use the REFERENCE DATA section as context when generating placeholder content"
         + " - never include the reference data itself in your output";
 
+    /// <summary>A request for a named data source, optionally capped to a number of rows.</summary>
+    /// <param name="Name">The variable supplying the data.</param>
+    /// <param name="Limit">Most rows to render, or null for all of them.</param>
     public sealed record DataSourceRequest(string Name, int? Limit);
 
     /// <summary>Collects (name, limit) requests, deduplicated in order of first appearance; the most generous request wins.</summary>

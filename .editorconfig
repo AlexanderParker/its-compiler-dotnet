@@ -1,0 +1,128 @@
+# C# conventions for this repository.
+#
+# Follows the .NET coding conventions:
+# https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
+#
+# The point of this file is that the conventions are enforced by the build and
+# the editor rather than remembered. Anything set to a warning here is an error
+# in the library project, which sets TreatWarningsAsErrors.
+#
+# The docs guidance limits sample lines to 65 characters for rendering on the
+# docs site. That is deliberately not applied here: this is library code, not a
+# published sample, and wrapping at 65 would hurt readability.
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+
+[*.{cs,csx}]
+indent_size = 4
+
+# Language keywords rather than runtime type names: string, not String.
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_predefined_type_for_member_access = true:warning
+
+# using directives outside the namespace, sorted with System first. Inside a
+# namespace they resolve relative to it, which makes name resolution
+# context-sensitive and can break when a dependency adds a matching namespace.
+csharp_using_directive_placement = outside_namespace:warning
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+
+# File-scoped namespaces: one namespace per file, so the extra nesting buys
+# nothing.
+csharp_style_namespace_declarations = file_scoped:warning
+
+# var only where the type is obvious from the right-hand side.
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+# Modern expression-level preferences.
+csharp_style_expression_bodied_methods = when_on_single_line:suggestion
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_accessors = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_collection_expression = true:suggestion
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+
+# Allman brace placement, which is what the guidance specifies. Braces are
+# required only when the body spans lines, which is the case where omitting
+# them is actually hazardous. The concise single-line form this codebase uses
+# for guard clauses stays, because the guidance does not forbid it and
+# rewriting fifty-odd guards would be churn for its own sake.
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_prefer_braces = when_multiline:warning
+
+# Naming.
+dotnet_naming_rule.types_pascal_case.severity = warning
+dotnet_naming_rule.types_pascal_case.symbols = types_and_members
+dotnet_naming_rule.types_pascal_case.style = pascal_case
+
+dotnet_naming_symbols.types_and_members.applicable_kinds = class,struct,interface,enum,delegate,method,property,event
+dotnet_naming_symbols.types_and_members.applicable_accessibilities = public,internal,protected,private
+
+# Static readonly and const fields are PascalCase. This rule is declared before
+# the instance-field rule because the first matching rule wins.
+dotnet_naming_rule.static_readonly_pascal_case.severity = warning
+dotnet_naming_rule.static_readonly_pascal_case.symbols = static_readonly_fields
+dotnet_naming_rule.static_readonly_pascal_case.style = pascal_case
+
+dotnet_naming_symbols.static_readonly_fields.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = private,internal,public,protected
+dotnet_naming_symbols.static_readonly_fields.required_modifiers = static,readonly
+
+# Private instance fields carry a leading underscore.
+dotnet_naming_rule.private_fields_underscore.severity = warning
+dotnet_naming_rule.private_fields_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_underscore.style = underscore_camel_case
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_fields.required_modifiers =
+
+dotnet_naming_rule.constants_pascal_case.severity = warning
+dotnet_naming_rule.constants_pascal_case.symbols = constants
+dotnet_naming_rule.constants_pascal_case.style = pascal_case
+
+dotnet_naming_symbols.constants.applicable_kinds = field,local
+dotnet_naming_symbols.constants.required_modifiers = const
+
+dotnet_naming_rule.parameters_camel_case.severity = warning
+dotnet_naming_rule.parameters_camel_case.symbols = parameters
+dotnet_naming_rule.parameters_camel_case.style = camel_case
+
+dotnet_naming_symbols.parameters.applicable_kinds = parameter
+
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_naming_style.camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+
+# Quality rules that catch real defects rather than style.
+dotnet_diagnostic.CA2016.severity = warning  # forward the CancellationToken
+dotnet_diagnostic.CA1305.severity = warning  # specify IFormatProvider
+dotnet_diagnostic.CA1310.severity = warning  # specify StringComparison for correctness
+dotnet_diagnostic.CA2201.severity = warning  # do not raise reserved exception types
+
+[*.{json,yml,yaml}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
