@@ -8,7 +8,7 @@
 dotnet add package InstructionTemplateSpecification.Compiler
 ```
 
-NuGet publication is pending; until then, reference the `src/InstructionTemplateSpecification.Compiler` project directly.
+Or reference the `src/InstructionTemplateSpecification` project directly.
 
 Targets .NET 8.
 
