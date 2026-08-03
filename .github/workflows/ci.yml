@@ -5,6 +5,11 @@ on:
     branches: [main]
   pull_request:
 
+# Stated explicitly rather than relying on the repository default, so the
+# permissions a workflow runs with are readable here.
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
