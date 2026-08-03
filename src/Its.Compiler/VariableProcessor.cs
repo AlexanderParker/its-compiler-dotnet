@@ -137,7 +137,10 @@ internal sealed partial class VariableProcessor
         switch (value)
         {
             case null:
-                return "";
+                // "null", not an empty string. An empty string would lose the
+                // distinction between a null and a genuinely empty value, and
+                // the other two compilers render "null".
+                return "null";
             case JsonArray array:
                 return string.Join(", ", array.Select(item => ConvertToString(item)));
             case JsonObject obj:
@@ -149,11 +152,80 @@ internal sealed partial class VariableProcessor
                         ? text[.._options.MaxTextLength] + "... [TRUNCATED]"
                         : text;
                 }
-                if (scalar.TryGetValue<bool>(out var flag)) return flag ? "true" : "false";
-                return scalar.ToJsonString();
+                return RenderScalar(scalar);
             default:
-                return value.ToJsonString();
+                return RenderScalar(value);
         }
+    }
+
+    /// <summary>
+    /// Renders a scalar exactly as the Python and JavaScript compilers do.
+    /// </summary>
+    /// <remarks>
+    /// Each implementation used to stringify with its own language's
+    /// conventions, which agreed on common values and diverged at the edges.
+    /// This is the single definition the three now share: lowercase booleans,
+    /// "null" for null, whole numbers without a decimal part, and exponents
+    /// written with a lowercase e, no plus sign and no leading zeros.
+    /// </remarks>
+    internal static string RenderScalar(JsonNode? node)
+    {
+        if (node is null) return "null";
+
+        if (node is JsonValue value)
+        {
+            if (value.TryGetValue<string>(out var text)) return text;
+
+            switch (value.GetValueKind())
+            {
+                case System.Text.Json.JsonValueKind.True:
+                    return "true";
+                case System.Text.Json.JsonValueKind.False:
+                    return "false";
+                case System.Text.Json.JsonValueKind.Null:
+                    return "null";
+            }
+
+            if (value.TryGetValue<double>(out var number))
+            {
+                return RenderNumber(number);
+            }
+        }
+
+        return node.ToJsonString();
+    }
+
+    /// <summary>Renders a number in the form all three compilers agree on.</summary>
+    internal static string RenderNumber(double value)
+    {
+        // "R" gives the shortest representation that round-trips. Invariant
+        // culture because a comma decimal separator would be a locale-
+        // dependent quirk of exactly the kind this is here to remove.
+        var text = value.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+
+        var exponentAt = text.IndexOfAny(new[] { 'e', 'E' });
+        if (exponentAt < 0)
+        {
+            // Whole values carry no decimal part: 1, never 1.0.
+            if (text.EndsWith(".0", StringComparison.Ordinal))
+            {
+                text = text[..^2];
+            }
+            return text;
+        }
+
+        var mantissa = text[..exponentAt];
+        var exponent = text[(exponentAt + 1)..];
+        var negative = exponent.StartsWith('-');
+        var digits = exponent.TrimStart('+', '-').TrimStart('0');
+        if (digits.Length == 0) digits = "0";
+
+        if (mantissa.EndsWith(".0", StringComparison.Ordinal))
+        {
+            mantissa = mantissa[..^2];
+        }
+
+        return $"{mantissa}e{(negative ? "-" : string.Empty)}{digits}";
     }
 
     /// <summary>Resolves a reference like user.name, items[0].sku, features.length or forecast.top(3).concat(day).</summary>
@@ -227,17 +299,7 @@ internal sealed partial class VariableProcessor
     [GeneratedRegex(@"^(.*)\.(concat|sum|avg|min|max|top)\(\s*([A-Za-z_][A-Za-z0-9_]*|\d+)?\s*\)$")]
     private static partial Regex FunctionSuffixPattern();
 
-    private static string ConcatText(JsonNode? item)
-    {
-        if (item is null) return "null";
-        if (item is JsonValue value)
-        {
-            if (value.TryGetValue<string>(out var text)) return text;
-            if (value.GetValueKind() == System.Text.Json.JsonValueKind.True) return "true";
-            if (value.GetValueKind() == System.Text.Json.JsonValueKind.False) return "false";
-        }
-        return item.ToJsonString();
-    }
+    private static string ConcatText(JsonNode? item) => RenderScalar(item);
 
     private static JsonNode? ApplyCollectionFunction(JsonNode? value, string name, string? arg, string reference)
     {
