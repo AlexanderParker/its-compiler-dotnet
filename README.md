@@ -99,7 +99,9 @@ POST /compile
 GET  /health
 ```
 
-CORS origins come from `ITS_CORS_ORIGINS` (comma-separated), defaulting to the studio demo origins, and the service binds to the port given by `PORT`. The repo-root `Dockerfile` builds this sample, and `railway.json` deploys it with the `/health` check. It backs the "Server (.NET)" engine of the live demo at https://alexanderparker.github.io/its-template-studio/.
+CORS origins come from `ITS_CORS_ORIGINS` (comma-separated), defaulting to the studio demo origins, and the service binds to the port given by `PORT`.
+
+A deployed instance is a public endpoint that costs its operator compute and egress, and CORS does not protect it: browsers enforce CORS, anything else ignores it. Requests are therefore throttled per client address and the body is capped before it is read. `ITS_RATE_LIMIT_PER_MINUTE` defaults to 30 and `ITS_MAX_REQUEST_BYTES` to 512 KB; setting the rate limit to `0` turns throttling off for a private deployment. The client address is taken from the rightmost `X-Forwarded-For` entry, because the leftmost is set by the caller and rotating a fake value would otherwise lift the limit. `/health` is never throttled, so a platform probe cannot trip it. The repo-root `Dockerfile` builds this sample, and `railway.json` deploys it with the `/health` check. It backs the "Server (.NET)" engine of the live demo at https://alexanderparker.github.io/its-template-studio/.
 
 ## Security model
 
